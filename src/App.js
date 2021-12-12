@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Loader from './components/Loader';
 import Layout from './components/Layout';
 import Setup from './components/Setup';
+import Quiz from './components/Quiz';
 
 const App = () => {
 
@@ -49,10 +50,10 @@ const App = () => {
             {!loading && !testStarted && !testCompleted && !surveyCompleted && (
                 <Setup startQuiz={startQuiz} />
             )}
-            {/* {!loading && testStarted && (
+            {!loading && testStarted && (
                 <Quiz data={data} endQuiz={endQuiz} />
             )}
-            {!loading && testCompleted && (
+            {/* {!loading && testCompleted && (
                 <Survey data={data} endQuiz={endQuiz} />
             )}
             {!loading && surveyCompleted && (
