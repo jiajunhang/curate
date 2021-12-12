@@ -69,7 +69,7 @@ def get_questions():
     print(type(currentList))
     print(type(data))
     currentList.append(data)
-    
+
     return dumps(currentList)
     """ TODO: Implementation for get question
         1. Input params: (ability estimate, list of question indices)
@@ -77,3 +77,10 @@ def get_questions():
         3. Select randomly without repeat
         4. Error handling: IF can't find question, we by default administer from isolated pool
     """
+
+def calculate_mle(difficulty, responses):
+
+def calculate_eap(difficulty, responses):
+
+def map_responses(questions, responses):
+
