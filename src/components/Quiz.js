@@ -31,24 +31,25 @@ const Quiz = ({ data, endQuiz }) => {
         console.log("fetchQuestion()");
 
         const body = {
+            group: group,
             questions: questions,
             responses: answers
         };
-
+        console.log("payload: " + JSON.stringify(body))
         try {
             const response = await axios.post(api, body);
-            const data = JSON.stringify(response.data);
-            console.log(data);
-            return response;
+            return response.data;
         } catch (error) {
             console.error(error);
         }
     }
 
-    const handleNext = () => {
+    const handleNext = async () => {
         console.log("handleNext()");
+        console.log(typeof questions)
+        console.log(`questions: ${questions}`)
         if (questionIndex == questionIndex) {
-            const questionList = fetchQuestion();
+            const questionList = await fetchQuestion();
             setQuestions(questionList);
             setQuestionIndex(questionIndex + 1);
             setCurrentAnswer(0);

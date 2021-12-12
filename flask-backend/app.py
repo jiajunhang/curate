@@ -59,11 +59,18 @@ def ability_eap():
 @app.route("/get_questions", methods=['POST'])
 def get_questions():
     body = request.get_json()
-
     print(body)
 
-    data = [{"correct": 4,"difficulty": -2.5492972826209277,"index": 1,"options": ["xzIjadaaaatB","6HchSbaaaaMSWeWaaaa","c0-nrdaaaaRkMGqcaaaa","RIreQcaaaa07dBHdaaa","KxO1hcaaaaOBNaMaaaa"],"question": "jaz3BdaaaaUm3iKdaaaaK30"}]
-    return dumps(data)
+    group = body['group']
+    currentList = body['questions']
+    currentResponses = body['responses']
+
+    data = {"correct": 4,"difficulty": -2.5492972826209277,"index": 1,"options": ["xzIjadaaaatB","6HchSbaaaaMSWeWaaaa","c0-nrdaaaaRkMGqcaaaa","RIreQcaaaa07dBHdaaa","KxO1hcaaaaOBNaMaaaa"],"question": "jaz3BdaaaaUm3iKdaaaaK30"}
+    print(type(currentList))
+    print(type(data))
+    currentList.append(data)
+    
+    return dumps(currentList)
     """ TODO: Implementation for get question
         1. Input params: (ability estimate, list of question indices)
         2. Based on ability estimate, retrieve window of items +- 0.2
