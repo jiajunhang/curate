@@ -3,6 +3,7 @@ import Loader from './components/Loader';
 import Layout from './components/Layout';
 import Setup from './components/Setup';
 import Quiz from './components/Quiz';
+import Survey from './components/Survey';
 
 const App = () => {
 
@@ -35,7 +36,7 @@ const App = () => {
         setLoading(false);
     };
 
-    const startSurvey = (surveyData) => {
+    const endSurvey = (surveyData) => {
         setLoading(true);
 
         setSurveyCompleted(true);
@@ -53,10 +54,10 @@ const App = () => {
             {!loading && testStarted && (
                 <Quiz data={data} endQuiz={endQuiz} />
             )}
-            {/* {!loading && testCompleted && (
-                <Survey data={data} endQuiz={endQuiz} />
+            {!loading && testCompleted && (
+                <Survey data={data} endSurvey={endSurvey} />
             )}
-            {!loading && surveyCompleted && (
+            {/* {!loading && surveyCompleted && (
                 <Result {...resultData} />
             )} */}
         </Layout>

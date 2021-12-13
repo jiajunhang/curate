@@ -14,10 +14,11 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
 const Quiz = ({ data, endQuiz }) => {
-
+    
+    const testLen = 5;
     const questions = [];
     const questionIndex = 0;
-    const answers = new Array(15).fill(0);
+    const answers = new Array(testLen).fill(0);
 
     const qna_init = {
         questions: questions,
@@ -45,6 +46,7 @@ const Quiz = ({ data, endQuiz }) => {
     const api = `http://localhost:5000/get_questions`;
 
     const fetchQuestion = async () => {
+        console.log("Fetching Question")
         const body = {
             group: group,
             questions: qna.questions,
@@ -170,7 +172,7 @@ const Quiz = ({ data, endQuiz }) => {
             <>
                 <Box>
                     <Typography variant="h4" gutterBottom component="div">
-                        Hello {name}, there are a total of 15 questions. The test is untimed, but you should be able to complete it in approximately 20 minutes.
+                        Hello {name}, there are a total of {testLen} questions. The test is untimed, but you should be able to complete it in approximately 20 minutes.
                     </Typography>
                     {scaled && <Typography>The final scoring is scaled according to difficulty of questions.</Typography>}
                     {!scaled && <Typography>The final scoring is based on number of questions answered corrected.</Typography>}
@@ -187,7 +189,7 @@ const Quiz = ({ data, endQuiz }) => {
             <>
                 <Grid container>
                     <Grid item md = {8}>
-                        {`Question No. ${qna.questionIndex} of 15`}
+                        {`Question No. ${qna.questionIndex} of ${testLen}`}
                     </Grid>
                     <Grid item md = {4}></Grid>
                     <Grid item md = {12}>
@@ -205,8 +207,8 @@ const Quiz = ({ data, endQuiz }) => {
                     </Grid>
                 </Grid>
                 {qna.questionIndex > 1 && <Button onClick={handlePrev}>Previous</Button>}
-                {qna.questionIndex < 15 && <Button onClick={handleNext}>Next</Button>}
-                {qna.questionIndex === 15 && <Button onClick={handleComplete}>Complete</Button>}
+                {qna.questionIndex < testLen && <Button onClick={handleNext}>Next</Button>}
+                {qna.questionIndex === testLen && <Button onClick={handleComplete}>Complete</Button>}
             </>}
         </>
     );
