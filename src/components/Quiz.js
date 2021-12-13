@@ -151,21 +151,21 @@ const Quiz = ({ data, endQuiz }) => {
             {error && <Alert
                         severity="warning"
                         action={
-                        <IconButton
-                        aria-label="close"
-                        color="inherit"
-                        size="small"
-                        onClick={() => {
-                            setError(false);
-                        }}
-                        >
-                            <CloseIcon fontSize="inherit" />
+                            <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                                setError(false);
+                            }}
+                            >
+                                <CloseIcon fontSize="inherit" />
                             </IconButton>
                         }
                         sx={{ mb: 2 }}
                         >
-                        Please select an answer for Question {qna.questionIndex}.
-                    </Alert>}
+                            Please select an answer for Question {qna.questionIndex} before proceeding.
+            </Alert>}
             {!begin && !loading &&
             <>
                 <Box>
