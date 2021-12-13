@@ -6,28 +6,31 @@ import Box from '@mui/material/Box';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import axios from 'axios';
 import Loader from './Loader';
 
 const Quiz = ({ data, endQuiz }) => {
 
-    const { name, matric, group } = data;
+    const arr = new Array(15).fill(0)
+
+    const { name, group } = data;
     const scaled = group == 1 ? false : true;
     const [begin, setBegin] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const [questions, setQuestions] = useState([]);
-    const [answers, setAnswers] = useState([]);
+    const [answers, setAnswers] = useState(arr);
     
     const [questionIndex, setQuestionIndex] = useState(0);
     const [currentAnswer, setCurrentAnswer] = useState(0);
 
     useEffect(() => {
-        console.log("next: " + questions)
-    }, questionIndex)
-
+        console.log("qnIndex: " + questionIndex)
+        console.log("currAns: " + currentAnswer)
+        console.log("answers: " + answers)
+    }, [questionIndex, currentAnswer, answers])
+    
     const handleBegin = async () => {
         console.log("handleBegin()");
         setBegin(true);
@@ -53,38 +56,110 @@ const Quiz = ({ data, endQuiz }) => {
         }
     }
 
+    /**
+     * 2 Cases: 
+     * 1. Latest Qn
+     *   i. Push currentAnswer to answers
+     *   ii. Fetch new question
+     *   iii. Increment question index
+     *   iv. Update currentAnswer to 0
+     * 
+     * 2. Not Latest Qn
+     *   i. Update currentAnswer onto answers
+     *   ii. Increment question index
+     *   iii. Update currentAnswer to answers[qnIdx]
+     */
     const handleNext = async () => {
         console.log("handleNext()");
+
+        setLoading(true);
+
         if (questionIndex == questions.length) {
-            setLoading(true);
+
+            if (questionIndex > 0) {
+                let newAns = answers.slice();
+                newAns[questionIndex -1 ] = currentAnswer;
+                setAnswers( newAns );
+            }
 
             const questionList = await fetchQuestion();
             setQuestions(questionList);
-            console.log(questions);
+            //console.log(questions);
             setQuestionIndex(questionIndex + 1);
             setCurrentAnswer(0);
-            setLoading(false);
+
+            
         } else {
+
+            let newAns = answers.slice();
+            newAns[questionIndex + 1] = currentAnswer;
+            setAnswers( newAns );
+
             setQuestionIndex(questionIndex + 1);
-            setCurrentAnswer( answers[questionIndex-1] );
+            setCurrentAnswer( answers[questionIndex-1] )
         }
+        setLoading(false);
     }
 
+    /**
+     * 2 Cases:
+     * 1. Prev from latest qn
+     *   i. Push currentAnswer into answers
+     *   ii. Decrement questionIndex
+     *   iii. Update currentAnswer from answers
+     * 
+     * 2. Prev from anywhere
+     *   i. Save currentAnswer into answers
+     *   ii. Decrement questionIndex
+     *   iii. Update currentAnswer from answers
+     */
     const handlePrev = () => {
-        setQuestionIndex(questionIndex - 1);
-        setCurrentAnswer( answers[questionIndex-1] );
+
+        setLoading(true)
+
+        if (questionIndex == questions.length) {
+            let newAns = answers.slice();
+            newAns[questionIndex-1] = currentAnswer;
+            setAnswers( newAns );
+
+            setQuestionIndex(questionIndex - 1);
+            console.log("qnIdx: " + questionIndex);
+            setCurrentAnswer( answers[questionIndex-1] )
+            console.log("currAns1: " + answers[questionIndex-1]);
+            console.log("currAns2: " + currentAnswer);
+        } else {
+
+            let newAns = answers.slice();
+            newAns[questionIndex-1] = currentAnswer;
+            setAnswers( newAns );
+    
+            setQuestionIndex(questionIndex - 1);
+            console.log("qnIdx: " + questionIndex);
+            setCurrentAnswer( answers[questionIndex-1] )
+            console.log("currAns: " + answers[questionIndex-1]);
+            console.log("currAns: " + currentAnswer);
+        }
+        setLoading(false);
     }
 
     const handleComplete = () => {
+        setLoading(true);
+
+        let newAns = answers.slice();
+        newAns[questionIndex-1] = currentAnswer;
+        setAnswers( newAns );
+
         const quizData = {
             questions: questions,
             responses: answers
         }
 
         endQuiz(quizData);
+        setLoading(false);
     }
 
     const handleOptionClick = (e) => {
+        console.log("currentAns: " + e.target.value);
         setCurrentAnswer(e.target.value);
     }
 
@@ -124,14 +199,14 @@ const Quiz = ({ data, endQuiz }) => {
                     <Grid item md = {12}>
                         <RadioGroup value={currentAnswer} onChange={handleOptionClick}>
                             {questions[questionIndex-1].options.map( (e, idx) => 
-                                <FormControlLabel value={idx} control={<Radio/>} label={e} />
+                                <FormControlLabel key={idx+1} checked={currentAnswer == idx+1} value={idx+1} control={<Radio/>} label={idx+1 + ". " +  e} />
                             )}
                         </RadioGroup>
                     </Grid>
                 </Grid>
                 {questionIndex > 1 && <Button onClick={handlePrev}>Previous</Button>}
                 {questionIndex < 15 && <Button onClick={handleNext}>Next</Button>}
-                {questionIndex == 15 && <Button onClick={handleComplete}>Complete</Button>}
+                {questionIndex === 15 && <Button onClick={handleComplete}>Complete</Button>}
             </>}
         </>
     );
