@@ -21,7 +21,7 @@ MONGODB_URI = os.environ['MONGODB_URI']
 client = MongoClient(MONGODB_URI)
 db = client['curate']
 sample_questions = db['sample_questions']
-
+survey = db['survey']
 
 @app.route("/")
 def hello_world():
@@ -78,9 +78,8 @@ def get_questions():
         4. Error handling: IF can't find question, we by default administer from isolated pool
     """
 
-def calculate_mle(difficulty, responses):
-
-def calculate_eap(difficulty, responses):
-
-def map_responses(questions, responses):
+@app.route("/get_survey_questions", methods=['GET'])
+def get_survey_questions():
+    surveyQn = survey.find();
+    return dumps(list(surveyQn))
 
