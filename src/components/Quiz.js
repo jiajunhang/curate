@@ -9,6 +9,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import axios from 'axios';
 import Loader from './Loader';
+import Alert from '@mui/material/Alert';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 const Quiz = ({ data, endQuiz }) => {
 
@@ -26,6 +29,7 @@ const Quiz = ({ data, endQuiz }) => {
     const scaled = group == 1 ? false : true;
     const [begin, setBegin] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
 
     const [qna, setQna] = useState(qna_init);
 
@@ -65,6 +69,12 @@ const Quiz = ({ data, endQuiz }) => {
      *   i. Increment question index
      */
     const handleNext = async () => {
+
+        if (qna.answers[qna.questionIndex-1] == 0) {
+            setError(true);
+            return;
+        }
+
         console.log("handleNext()");
 
         setLoading(true);
@@ -108,6 +118,12 @@ const Quiz = ({ data, endQuiz }) => {
     }
 
     const handleComplete = () => {
+        
+        if (qna.answers[qna.questionIndex-1] == 0) {
+            setError(true);
+            return;
+        }
+
         setLoading(true);
 
         const quizData = {
@@ -132,6 +148,24 @@ const Quiz = ({ data, endQuiz }) => {
     return (
         <>
             {loading && <Loader></Loader>}
+            {error && <Alert
+                        severity="warning"
+                        action={
+                        <IconButton
+                        aria-label="close"
+                        color="inherit"
+                        size="small"
+                        onClick={() => {
+                            setError(false);
+                        }}
+                        >
+                            <CloseIcon fontSize="inherit" />
+                            </IconButton>
+                        }
+                        sx={{ mb: 2 }}
+                        >
+                        Please select an answer for Question {qna.questionIndex}.
+                    </Alert>}
             {!begin && !loading &&
             <>
                 <Box>
