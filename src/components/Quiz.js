@@ -12,27 +12,28 @@ import Loader from './Loader';
 
 const Quiz = ({ data, endQuiz }) => {
 
-    const arr = new Array(15).fill(0)
+    const questions = [];
+    const questionIndex = 0;
+    const answers = new Array(15).fill(0);
+
+    const qna_init = {
+        questions: questions,
+        questionIndex: questionIndex,
+        answers: answers
+    }
 
     const { name, group } = data;
     const scaled = group == 1 ? false : true;
     const [begin, setBegin] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const [questions, setQuestions] = useState([]);
-    const [answers, setAnswers] = useState(arr);
-    
-    const [questionIndex, setQuestionIndex] = useState(0);
-    const [currentAnswer, setCurrentAnswer] = useState(0);
+    const [qna, setQna] = useState(qna_init);
 
     useEffect(() => {
-        console.log("qnIndex: " + questionIndex)
-        console.log("currAns: " + currentAnswer)
-        console.log("answers: " + answers)
-    }, [questionIndex, currentAnswer, answers])
+        console.log(JSON.stringify(qna));
+    }, [qna] )
     
     const handleBegin = async () => {
-        console.log("handleBegin()");
         setBegin(true);
         await handleNext();
     }
@@ -40,12 +41,10 @@ const Quiz = ({ data, endQuiz }) => {
     const api = `http://localhost:5000/get_questions`;
 
     const fetchQuestion = async () => {
-        console.log("fetchQuestion()");
-
         const body = {
             group: group,
-            questions: questions,
-            responses: answers
+            questions: qna.questions,
+            responses: qna.answers
         };
         try {
             const response = await axios.post(api, body);
@@ -59,15 +58,11 @@ const Quiz = ({ data, endQuiz }) => {
     /**
      * 2 Cases: 
      * 1. Latest Qn
-     *   i. Push currentAnswer to answers
-     *   ii. Fetch new question
-     *   iii. Increment question index
-     *   iv. Update currentAnswer to 0
+     *   i. Fetch new question
+     *   ii. Increment question index
      * 
      * 2. Not Latest Qn
-     *   i. Update currentAnswer onto answers
-     *   ii. Increment question index
-     *   iii. Update currentAnswer to answers[qnIdx]
+     *   i. Increment question index
      */
     const handleNext = async () => {
         console.log("handleNext()");
@@ -76,27 +71,19 @@ const Quiz = ({ data, endQuiz }) => {
 
         if (questionIndex == questions.length) {
 
-            if (questionIndex > 0) {
-                let newAns = answers.slice();
-                newAns[questionIndex -1 ] = currentAnswer;
-                setAnswers( newAns );
-            }
-
+            let clonedQna = { ...qna };
             const questionList = await fetchQuestion();
-            setQuestions(questionList);
-            //console.log(questions);
-            setQuestionIndex(questionIndex + 1);
-            setCurrentAnswer(0);
+            clonedQna.questions = questionList;
+            clonedQna.questionIndex++;
 
-            
+            setQna(clonedQna);
+
         } else {
 
-            let newAns = answers.slice();
-            newAns[questionIndex + 1] = currentAnswer;
-            setAnswers( newAns );
+            let clonedQna = { ...qna }
+            clonedQna.questionIndex++;
 
-            setQuestionIndex(questionIndex + 1);
-            setCurrentAnswer( answers[questionIndex-1] )
+            setQna(clonedQna);
         }
         setLoading(false);
     }
@@ -104,54 +91,28 @@ const Quiz = ({ data, endQuiz }) => {
     /**
      * 2 Cases:
      * 1. Prev from latest qn
-     *   i. Push currentAnswer into answers
-     *   ii. Decrement questionIndex
-     *   iii. Update currentAnswer from answers
+     *   i. Decrement questionIndex
      * 
      * 2. Prev from anywhere
-     *   i. Save currentAnswer into answers
-     *   ii. Decrement questionIndex
-     *   iii. Update currentAnswer from answers
+     *   i. Decrement questionIndex
      */
     const handlePrev = () => {
 
         setLoading(true)
 
-        if (questionIndex == questions.length) {
-            let newAns = answers.slice();
-            newAns[questionIndex-1] = currentAnswer;
-            setAnswers( newAns );
+        let clonedQna = { ...qna };
+        clonedQna.questionIndex--;
+        setQna(clonedQna);
 
-            setQuestionIndex(questionIndex - 1);
-            console.log("qnIdx: " + questionIndex);
-            setCurrentAnswer( answers[questionIndex-1] )
-            console.log("currAns1: " + answers[questionIndex-1]);
-            console.log("currAns2: " + currentAnswer);
-        } else {
-
-            let newAns = answers.slice();
-            newAns[questionIndex-1] = currentAnswer;
-            setAnswers( newAns );
-    
-            setQuestionIndex(questionIndex - 1);
-            console.log("qnIdx: " + questionIndex);
-            setCurrentAnswer( answers[questionIndex-1] )
-            console.log("currAns: " + answers[questionIndex-1]);
-            console.log("currAns: " + currentAnswer);
-        }
         setLoading(false);
     }
 
     const handleComplete = () => {
         setLoading(true);
 
-        let newAns = answers.slice();
-        newAns[questionIndex-1] = currentAnswer;
-        setAnswers( newAns );
-
         const quizData = {
-            questions: questions,
-            responses: answers
+            questions: qna.questions,
+            responses: qna.answers
         }
 
         endQuiz(quizData);
@@ -160,7 +121,12 @@ const Quiz = ({ data, endQuiz }) => {
 
     const handleOptionClick = (e) => {
         console.log("currentAns: " + e.target.value);
-        setCurrentAnswer(e.target.value);
+
+        let clonedQna = { ...qna };
+        let idx = clonedQna.questionIndex;
+        clonedQna.answers[idx-1] = parseInt(e.target.value);
+
+        setQna(clonedQna);
     }
 
     return (
@@ -187,26 +153,26 @@ const Quiz = ({ data, endQuiz }) => {
             <>
                 <Grid container>
                     <Grid item md = {8}>
-                        {`Question No. ${questionIndex} of 15`}
+                        {`Question No. ${qna.questionIndex} of 15`}
                     </Grid>
                     <Grid item md = {4}></Grid>
                     <Grid item md = {12}>
-                        <Typography>{questions[questionIndex-1].question}</Typography>
+                        <Typography>{qna.questions[qna.questionIndex-1].question}</Typography>
                     </Grid>
                     <Grid item md = {12}>
                         <Typography>Select one of the following choices:</Typography>
                     </Grid>
                     <Grid item md = {12}>
-                        <RadioGroup value={currentAnswer} onChange={handleOptionClick}>
-                            {questions[questionIndex-1].options.map( (e, idx) => 
-                                <FormControlLabel key={idx+1} checked={currentAnswer == idx+1} value={idx+1} control={<Radio/>} label={idx+1 + ". " +  e} />
+                        <RadioGroup value={qna.answers[qna.questionIndex-1]} onChange={handleOptionClick}>
+                            {qna.questions[qna.questionIndex-1].options.map( (e, idx) => 
+                                <FormControlLabel key={idx+1} checked={qna.answers[qna.questionIndex-1] === idx+1} value={idx+1} control={<Radio/>} label={idx+1 + ". " +  e} />
                             )}
                         </RadioGroup>
                     </Grid>
                 </Grid>
-                {questionIndex > 1 && <Button onClick={handlePrev}>Previous</Button>}
-                {questionIndex < 15 && <Button onClick={handleNext}>Next</Button>}
-                {questionIndex === 15 && <Button onClick={handleComplete}>Complete</Button>}
+                {qna.questionIndex > 1 && <Button onClick={handlePrev}>Previous</Button>}
+                {qna.questionIndex < 15 && <Button onClick={handleNext}>Next</Button>}
+                {qna.questionIndex === 15 && <Button onClick={handleComplete}>Complete</Button>}
             </>}
         </>
     );
