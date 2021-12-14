@@ -50,6 +50,10 @@ const Survey = ( {data, endSurvey} ) => {
 
     const api = `http://localhost:5000/get_survey_questions`;
 
+    useEffect(() => {
+        console.log(JSON.stringify(surveyData))
+    }, [surveyData]);
+
     const fetchSurvey = async () => {
         const response = await axios.get(api);
         return response.data
@@ -65,9 +69,18 @@ const Survey = ( {data, endSurvey} ) => {
 
     }
 
-    const handleOptionSelect = (e) => {
+    const handleOptionSelect = (e, qnIdx) => {
         console.log(JSON.stringify(surveyData));
-        console.log("surveyval: " + e.target.value)
+        const {name , value} = e.target
+        console.log("name: " + name)
+        console.log("surveyval: " + value)
+        console.log("qIdx: " + qnIdx)
+        let surveyCloned = {...surveyData};
+        let ans = surveyCloned.answers;
+        ans[qnIdx] = parseInt(value);
+        surveyCloned.answers = ans;
+
+        setSurveyData(surveyCloned);
     }
 
     const handleComplete = () => {
@@ -105,9 +118,9 @@ const Survey = ( {data, endSurvey} ) => {
                             <Typography>Select one of the following choices:</Typography>
                         </Grid>
                         <Grid item md = {12}>
-                            <RadioGroup value={surveyData.answers[qnIdx-1]} onChange={handleOptionSelect}>
+                            <RadioGroup value={surveyData.answers[qnIdx-1]} onChange={(e) => {handleOptionSelect(e, qnIdx)} }>
                                 {options.map( (option, optionIdx) => 
-                                    <FormControlLabel key={optionIdx} checked={surveyData.answers[qnIdx-1] === optionIdx+1} value={optionIdx+1} control={<Radio/>} label={optionIdx+1 + ": " + option.text}/>
+                                    <FormControlLabel key={optionIdx} checked={surveyData.answers[qnIdx] === optionIdx+1} value={optionIdx+1} control={<Radio/>} label={optionIdx+1 + ": " + option.text}/>
                                 )}
                             </RadioGroup>
                         </Grid>
