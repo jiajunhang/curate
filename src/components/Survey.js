@@ -9,6 +9,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import axios from 'axios';
 import Loader from './Loader';
+import Divider from '@mui/material/Divider';
 
 const Survey = ( {data, endSurvey} ) => {
 
@@ -92,18 +93,39 @@ const Survey = ( {data, endSurvey} ) => {
             {loading && <Loader></Loader>}
             {!beginSurvey && !loading &&
             <>
-                <Box>
-                    <Typography variant="h4" gutterBottom component="div">
-                        Hello {name}, you have completed the test successfully. We will now move onto the survey for data collection regarding the adaptivity of the test.
+                <Box sx={{
+                    marginTop: 10,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    border: 'solid 1px grey',
+                    padding: '20px',
+                }}>
+                    <Typography variant="h5" gutterBottom component="div">
+                        Hello {name}, 
+                        <p>You have completed the test successfully. </p>
+                        <p>We will now move onto the survey for data collection regarding the adaptivity of the test. </p>
                     </Typography>
+                    <Button onClick={handleBegin} variant="contained" sx={{
+                        bgcolor: 'button.primary',
+                        '&:hover': { 
+                            bgcolor:'button.secondary'
+                        }
+                    }}>
+                        Begin Survey
+                    </Button>
                 </Box>
-                <Button onClick={handleBegin} variant="contained">
-                    Begin Survey
-                </Button>
             </>
             }
             {beginSurvey && !loading &&
             <>
+            <Box sx={{
+                    marginTop: 10,
+                    marginBottom: 10,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    border: 'solid 1px grey',
+                    padding: '20px',
+                }}>
                 <Grid container>
                     {surveyData.questions.map( (qn, qnIdx) => 
                         <>
@@ -123,11 +145,19 @@ const Survey = ( {data, endSurvey} ) => {
                                     <FormControlLabel key={optionIdx} checked={surveyData.answers[qnIdx] === optionIdx+1} value={optionIdx+1} control={<Radio/>} label={optionIdx+1 + ": " + option.text}/>
                                 )}
                             </RadioGroup>
+                            <Divider/>
+                            <p></p>
                         </Grid>
                         </>
                     )}
                 </Grid>
-                <Button onClick={handleComplete}>Complete</Button>
+                <Button onClick={handleComplete} variant='contained' sx={{
+                            bgcolor: 'button.primary',
+                            '&:hover': { 
+                                bgcolor:'button.secondary'
+                            }
+                        }}>Complete</Button>
+                </Box>
             </>}
         </>
     );

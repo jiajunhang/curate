@@ -12,6 +12,7 @@ import Loader from './Loader';
 import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import Divider from '@mui/material/Divider';
 
 const Quiz = ({ data, endQuiz }) => {
     
@@ -170,30 +171,54 @@ const Quiz = ({ data, endQuiz }) => {
             </Alert>}
             {!begin && !loading &&
             <>
-                <Box>
-                    <Typography variant="h4" gutterBottom component="div">
-                        Hello {name}, there are a total of {testLen} questions. The test is untimed, but you should be able to complete it in approximately 20 minutes.
+                <Box sx={{
+                    marginTop: 10,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    border: 'solid 1px grey',
+                    padding: '20px',
+                }}>
+                    <Typography variant="h5" gutterBottom component="div">
+                         Hello {name} ,
+                        <p>There are a total of {testLen} questions.</p> 
+                        <p>The test is untimed, but you should be able to complete it in approximately 20 minutes.</p>
                     </Typography>
-                    {scaled && <Typography>The final scoring is scaled according to difficulty of questions.</Typography>}
-                    {!scaled && <Typography>The final scoring is based on number of questions answered corrected.</Typography>}
-                    <Typography>
-                        Try to achieve the highest score possible.
+                    {scaled && <Typography variant="h6" gutterBottom component="div">The final scoring is scaled according to difficulty of questions.</Typography>}
+                    {!scaled && <Typography variant="h6" gutterBottom component="div">The final scoring is based on number of questions answered corrected.</Typography>}
+                    <Typography variant="h6" gutterBottom component="div">
+                        Try to achieve the highest score possible.<p></p>
                     </Typography>
+                    <Button onClick={handleBegin} variant="contained" sx={{
+                        bgcolor: 'button.primary',
+                        '&:hover': { 
+                            bgcolor:'button.secondary'
+                        }
+                    }}>
+                        Begin Quiz
+                    </Button>
                 </Box>
-                <Button onClick={handleBegin} variant="contained">
-                    Begin Quiz
-                </Button>
             </>
             }
             {begin && !loading &&
             <>
-                <Grid container>
-                    <Grid item md = {8}>
-                        {`Question No. ${qna.questionIndex} of ${testLen}`}
+            <Box sx={{
+                    marginTop: 10,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    border: 'solid 1px grey',
+                    padding: '20px',
+                }}>
+                <Grid container spacing={2}>
+                    <Grid item md = {6}>
+                        <Typography variant='h4'>
+                            {`Question No. ${qna.questionIndex} of ${testLen}`}
+                        </Typography>
+                        
                     </Grid>
-                    <Grid item md = {4}></Grid>
+                    <Grid item md = {6}></Grid>
                     <Grid item md = {12}>
-                        <Typography>{qna.questions[qna.questionIndex-1].question}</Typography>
+                        <Typography>{qna.questions[qna.questionIndex-1].question} </Typography>
                     </Grid>
                     <Grid item md = {12}>
                         <Typography>Select one of the following choices:</Typography>
@@ -204,11 +229,34 @@ const Quiz = ({ data, endQuiz }) => {
                                 <FormControlLabel key={idx+1} checked={qna.answers[qna.questionIndex-1] === idx+1} value={idx+1} control={<Radio/>} label={idx+1 + ". " +  e} />
                             )}
                         </RadioGroup>
+                        <p></p>
+                        <Divider/>
+                    </Grid>
+                    
+                    <Grid item md={8}></Grid>
+                    <Grid item md={4}>
+                        {qna.questionIndex > 1 && <Button onClick={handlePrev} variant='contained' sx={{
+                            bgcolor: 'button.primary',
+                            '&:hover': { 
+                                bgcolor:'button.secondary'
+                            },
+                            marginRight:1
+                        }}>Previous</Button>}
+                        {qna.questionIndex < testLen && <Button onClick={handleNext} variant='contained' sx={{
+                            bgcolor: 'button.primary',
+                            '&:hover': { 
+                                bgcolor:'button.secondary'
+                            }
+                        }}>Next</Button>}
+                        {qna.questionIndex === testLen && <Button onClick={handleComplete} variant='contained' sx={{
+                            bgcolor: 'button.primary',
+                            '&:hover': { 
+                                bgcolor:'button.secondary'
+                            }
+                        }}>Complete</Button>}
                     </Grid>
                 </Grid>
-                {qna.questionIndex > 1 && <Button onClick={handlePrev}>Previous</Button>}
-                {qna.questionIndex < testLen && <Button onClick={handleNext}>Next</Button>}
-                {qna.questionIndex === testLen && <Button onClick={handleComplete}>Complete</Button>}
+            </Box>
             </>}
         </>
     );

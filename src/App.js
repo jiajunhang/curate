@@ -1,10 +1,24 @@
 import React, { useState } from 'react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Loader from './components/Loader';
 import Layout from './components/Layout';
 import Setup from './components/Setup';
 import Quiz from './components/Quiz';
 import Survey from './components/Survey';
 import Result from './components/Result';
+
+const theme = createTheme({
+    palette: {
+      background: {
+        paper: '#fff',
+        dark: '#282c34'
+      },
+      button: {
+        primary: '#282c34',
+        secondary: '#616469',
+      },
+    },
+  });
 
 const App = () => {
 
@@ -48,21 +62,23 @@ const App = () => {
     }
 
     return (
-        <Layout>
-            {loading && <Loader />}
-            {!loading && !testStarted && !testCompleted && !surveyCompleted && (
-                <Setup startQuiz={startQuiz} />
-            )}
-            {!loading && testStarted && (
-                <Quiz data={data} endQuiz={endQuiz} />
-            )}
-            {!loading && testCompleted && (
-                <Survey data={data} endSurvey={endSurvey} />
-            )}
-            {!loading && surveyCompleted && (
-                <Result data={data} quizData={quizData} surveyData={surveyData} />
-            )}
-        </Layout>
+        <ThemeProvider theme={theme}>
+            <Layout>
+                {loading && <Loader />}
+                {!loading && !testStarted && !testCompleted && !surveyCompleted && (
+                    <Setup startQuiz={startQuiz} />
+                )}
+                {!loading && testStarted && (
+                    <Quiz data={data} endQuiz={endQuiz} />
+                )}
+                {!loading && testCompleted && (
+                    <Survey data={data} endSurvey={endSurvey} />
+                )}
+                {!loading && surveyCompleted && (
+                    <Result data={data} quizData={quizData} surveyData={surveyData} />
+                )}
+            </Layout>
+        </ThemeProvider>
     );
 };
 
