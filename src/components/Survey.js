@@ -126,15 +126,17 @@ const Survey = ( {data, endSurvey} ) => {
                     border: 'solid 1px grey',
                     padding: '20px',
                 }}>
-                <Grid container>
+                <Grid container spacing={1}>
                     {surveyData.questions.map( (qn, qnIdx) => 
                         <>
                         <Grid item md = {8}>
-                            {`Question No. ${qnIdx+1} of 6`}
+                            <Typography variant='h5'>
+                                {`Question No. ${qnIdx+1} of 6`}
+                            </Typography>
                         </Grid>
                         <Grid item md = {4}></Grid>
                         <Grid item md = {12}>
-                            <Typography>{qn.question}</Typography>
+                            <Typography variant='h6'>{qn.question}</Typography>
                         </Grid>
                         <Grid item md = {12}>
                             <Typography>Select one of the following choices:</Typography>

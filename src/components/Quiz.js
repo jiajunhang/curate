@@ -218,7 +218,7 @@ const Quiz = ({ data, endQuiz }) => {
                     </Grid>
                     <Grid item md = {6}></Grid>
                     <Grid item md = {12}>
-                        <Typography>{qna.questions[qna.questionIndex-1].question} </Typography>
+                        <Typography variant='h5'>{qna.questions[qna.questionIndex-1].question} </Typography>
                     </Grid>
                     <Grid item md = {12}>
                         <Typography>Select one of the following choices:</Typography>
