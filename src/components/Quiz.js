@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import axios from 'axios';
 import Loader from './Loader';
@@ -13,6 +10,8 @@ import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 const Quiz = ({ data, endQuiz }) => {
     
@@ -224,11 +223,15 @@ const Quiz = ({ data, endQuiz }) => {
                         <Typography>Select one of the following choices:</Typography>
                     </Grid>
                     <Grid item md = {12}>
-                        <RadioGroup value={qna.answers[qna.questionIndex-1]} onChange={handleOptionClick}>
+                        <ToggleButtonGroup orientation="vertical" value={qna.answers[qna.questionIndex-1]} exclusive onChange={handleOptionClick} fullWidth={true}>
                             {qna.questions[qna.questionIndex-1].options.map( (e, idx) => 
-                                <FormControlLabel key={idx+1} checked={qna.answers[qna.questionIndex-1] === idx+1} value={idx+1} control={<Radio/>} label={idx+1 + ". " +  e} />
+                                <ToggleButton key={idx+1} selected={qna.answers[qna.questionIndex-1] === idx+1} value={idx+1} label={idx+1 + ". " +  e} sx={{
+                                    justifyContent: "flex-start"
+                                }}>
+                                    {idx+1 + ". " +  e}
+                                </ToggleButton>
                             )}
-                        </RadioGroup>
+                        </ToggleButtonGroup>
                         <p></p>
                         <Divider/>
                     </Grid>
