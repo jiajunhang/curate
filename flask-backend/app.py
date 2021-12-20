@@ -22,7 +22,8 @@ client = MongoClient(MONGODB_URI)
 db = client['curate']
 
 sample_questions = db['sample_questions']
-qns = db['questions']
+#qns = db['questions'] FOR LIVE DATA
+
 survey = db['survey']
 
 @app.route("/")
@@ -82,20 +83,25 @@ def get_questions():
     currentQuestions = body['questions']
     currentResponses = body['responses']
 
-"""     # Selecting estimator
+    #TODO: Question selection for Group 1 (Random Selection)
+
+    # Selecting estimator
     estimator = mle_estimator if group == 2 else eap_estimator
+
     # Calculate current estimate based on responses thus far
     currentEstimate = getEstimate(estimator, currentQuestions, currentResponses)
+    print('currentEstimate: ' + currentEstimate)
+
     # Item selection based on Maximum Fisher Information
     nextQuestion = getQuestionByEstimate(currentQuestions, currentEstimate)
 
-    currentQuestions.append(nextQuestion) """
+    currentQuestions.append(nextQuestion)
 
     # Dummy Data for testing
-    data = {"correct": 4,"difficulty": -2.5492972826209277,"index": 1,"options": ["xzIjadaaaatB","6HchSbaaaaMSWeWaaaa","c0-nrdaaaaRkMGqcaaaa","RIreQcaaaa07dBHdaaa","KxO1hcaaaaOBNaMaaaa"],"question": "jaz3BdaaaaUm3iKdaaaaK30"}
-    print(type(currentQuestions))
-    print(type(data))
-    currentList.append(data)
+    #data = {"correct": 4,"difficulty": -2.5492972826209277,"index": 1,"options": ["xzIjadaaaatB","6HchSbaaaaMSWeWaaaa","c0-nrdaaaaRkMGqcaaaa","RIreQcaaaa07dBHdaaa","KxO1hcaaaaOBNaMaaaa"],"question": "jaz3BdaaaaUm3iKdaaaaK30"}
+    #print(type(currentQuestions))
+    #print(type(data))
+    #currentList.append(data)
 
     return dumps(currentQuestions)
     
@@ -104,6 +110,12 @@ def get_questions():
 def get_survey_questions():
     surveyQn = survey.find();
     return dumps(list(surveyQn))
+
+def response_helper(x, y):
+    if x == y:
+        return 1
+    else:
+        return 0
 
 
 def getEstimate(estimator, currentQuestions, currentResponses):
@@ -119,10 +131,10 @@ def getEstimate(estimator, currentQuestions, currentResponses):
     if (len(currentQuestions) == 0):
         return str(0)
     
-    question_difficulties = map(lambda x: x.difficulty, currentQuestions)
+    question_difficulties = list(map(lambda x: x['difficulty'], currentQuestions))
 
-    correct_answers = map(lambda x: x.correct, currentQuestions)
-    mapped_responses = map(lambda x, y: x == y, correct_answers, currentResponses)
+    correct_answers = list(map(lambda x: x['correct'], currentQuestions))
+    mapped_responses = list(map(lambda x, y: response_helper(x, y), correct_answers, currentResponses))
 
     ability_estimate = estimator(mapped_responses, question_difficulties)
 
@@ -132,13 +144,22 @@ def getEstimate(estimator, currentQuestions, currentResponses):
 TODO: 
 1. Further validation, check adjacent values for a more accurate value
 2. Testing with dummy data
+3. Randomize across neighbors(?)
 '''
 def getQuestionByEstimate(currentQuestions, currentEstimate):
+    all_qns = list(sample_questions.find()) # for LIVE, change sample_questions to qns
+
+    currentEstimate = float(currentEstimate)
+    print("pre clone db")
 
     # Clone DB & remove used indices
-    qn_pool = [x for x in qns if x not in currentQuestions]
+    qn_pool = [x for x in all_qns if x not in currentQuestions]
+    print("post clone db")
+    print(type(qn_pool))
+
     # Clone question into difficulty
-    difficulty_pool = map(lambda x:x.difficulty, qn_pool)
+    difficulty_pool = list(map(lambda x:x['difficulty'], qn_pool))
+    print("post map difficulty")
 
     # Perform binary search
     lo = 0
@@ -168,10 +189,10 @@ def mle_estimator(responses, difficulty):
         Returns:
             ability: decimal estimate of student ability
     '''
-    np_responses = np.array(responses).T
+    np_responses = np.array([responses]).T
     np_difficulty = np.array(difficulty)
 
-    ability = girth.ability_mle(responses, difficulty, np.ones_like(responses))
+    ability = girth.ability_mle(np_responses, np_difficulty, np.ones_like(responses))
 
     '''
     Scaled increment/decrement if responses are all correct/wrong
@@ -183,7 +204,7 @@ def mle_estimator(responses, difficulty):
     if np.isnan(ability[0]):
         last_difficulty = abs(np_difficulty[len(np_difficulty)-1])
         diff = (3 - last_difficulty) / 3
-        is_correct = np_resposnes[len(np_responses)-1]
+        is_correct = np_responses[len(np_responses)-1]
 
         res = last_difficulty + diff if is_correct == 1 else last_difficulty - diff
         return str(res)
@@ -199,8 +220,8 @@ def eap_estimator(responses, difficulty):
         Returns:
             ability: decimal estimate of student ability
     '''
-    np_responses = np.array(responses).T
+    np_responses = np.array([responses]).T
     np_difficulty = np.array(difficulty)
+    ability = girth.ability_eap(np_responses, np_difficulty, np.ones_like(responses))
 
-    ability = girth.ability_eap(responses, difficulty, np.ones_like(responses))
     return str(ability[0])
