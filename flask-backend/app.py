@@ -9,6 +9,7 @@ import os
 import girth
 import pandas as pd
 import numpy as np
+import random
 
 app = Flask(__name__)
 CORS(app)
