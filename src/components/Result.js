@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Loader from './Loader'
+import axios from 'axios';
 
 const Result = ({data, quizData, surveyData}) => {
 
@@ -20,9 +21,10 @@ const Result = ({data, quizData, surveyData}) => {
 
         console.log(JSON.stringify(body));
 
-        //const response = await axios.post(api, body);
+        const response = await axios.post(api, body);
+        return response;
 
-        const stub = {
+        /* const stub = {
             summary: {
                 name: "jun",
                 matric: "a1234567",
@@ -34,27 +36,20 @@ const Result = ({data, quizData, surveyData}) => {
         }
 
         console.log("stub: " + JSON.stringify(stub))
-        return stub;
-    }
-
-    const initPage = () => {
-        setLoading(true);
-        const res = fetchResult();
-        setResult(res);
-        setLoading(false);
+        return stub; */
     }
 
     useEffect(() => {
         setLoading(true)
-        const res = fetchResult().then(res => setResult(res))
+        fetchResult().then(res => setResult(res.data))
         console.log(result)
         setLoading(false)
     }, [])
 
     return (
         <>
-            {loading && <Loader></Loader>}
-            {!loading && result && result.summary &&
+            {(!result || !result.summary) && <Loader></Loader>}
+            {result && result.summary &&
                 <Box sx={{
                     marginTop: 10,
                     display: 'flex',
@@ -67,14 +62,14 @@ const Result = ({data, quizData, surveyData}) => {
                             <Typography variant="h4">Summary of Quiz</Typography>
                         </Grid>
                         {Object.entries(result.summary).map( ([k,v], i) => 
-                        <>
+                        <Grid container item key={k}>
                             <Grid item md={4}>
                                 <Typography>{k}</Typography>
                             </Grid>
                             <Grid item md={8}>
                                 <Typography>{v}</Typography>
                             </Grid>
-                        </>
+                        </Grid>
                         )}
                     </Grid>
                 </Box>

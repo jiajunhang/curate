@@ -76,7 +76,7 @@ def get_questions():
             questions: updated list of questions
     '''
     body = request.get_json()
-    print(body)
+    #print(body)
 
     # Extract fields from request body
     group = body['group']
@@ -86,14 +86,22 @@ def get_questions():
     #TODO: Question selection for Group 1 (Random Selection)
 
     # Selecting estimator
-    estimator = mle_estimator if group == 2 else eap_estimator
+    if group == 1:
+        estimator = standard_estimator
+    elif group == 2:
+        estimator = mle_estimator
+    else:
+        estimator = eap_estimator
 
     # Calculate current estimate based on responses thus far
     currentEstimate = getEstimate(estimator, currentQuestions, currentResponses)
     print('currentEstimate: ' + currentEstimate)
 
     # Item selection based on Maximum Fisher Information
-    nextQuestion = getQuestionByEstimate(currentQuestions, currentEstimate)
+    if group == 1:
+        nextQuestion = getRandomQuestion(currentQuestions)
+    else:
+        nextQuestion = getQuestionByEstimate(currentQuestions, currentEstimate)
 
     currentQuestions.append(nextQuestion)
 
@@ -110,6 +118,60 @@ def get_questions():
 def get_survey_questions():
     surveyQn = survey.find();
     return dumps(list(surveyQn))
+
+@app.route("/submit_quiz", methods=['POST'])
+def submit_quiz():
+    body = request.get_json()
+    print("body:")
+    print(body)
+
+    data = body['data']
+    quiz_data = body['quizData']
+    survey_data = body['surveyData']
+
+    group = data['group']
+    questions = quiz_data['questions']
+    responses = quiz_data['responses']
+
+    if group == 1:
+        estimator = standard_estimator
+        est_text = "N.A"
+    elif group == 2:
+        estimator = mle_estimator
+        est_text = "MLE"
+    else:
+        estimator = eap_estimator
+        est_text = "EAP"
+    
+    correct_answers = list(map(lambda x: x['correct'], questions))
+    mapped_responses = list(map(lambda x, y: response_helper(x, y), correct_answers, responses))
+    
+    final_estimate = getEstimate(estimator, questions, responses)
+
+    res = {
+        "summary" : {
+            "name": data['name'],
+            "matric": data['matric'],
+            "estimator": est_text,
+            "ability": final_estimate,
+            "total_questions": len(questions),
+            "total_correct": mapped_responses.count(1)
+        },
+        "detail": {
+            "questions": list(map(lambda x:x['index'], questions)),
+            "responses": responses,
+            "accuracy": mapped_responses
+        },
+        "survey": {
+            "group": data['group'] ,
+            "likert_score": sum(survey_data['answers'])
+        }
+    }
+    print("res:")
+    print(res)
+
+    #TODO: persist into mongoDB
+    return res
 
 def response_helper(x, y):
     if x == y:
@@ -179,6 +241,24 @@ def getQuestionByEstimate(currentQuestions, currentEstimate):
 
     return nextQn
 
+
+def getRandomQuestion(currentQuestions):
+    all_qns = list(sample_questions.find()) # for LIVE, change sample_questions to qns
+    qn_pool = [x for x in all_qns if x not in currentQuestions]
+
+    random_index = random.randint(0,len(qn_pool)-1)
+
+    nextQn = qn_pool[random_index]
+
+    return nextQn
+
+def standard_estimator(responses, difficulty):
+    total = len(responses)
+    score = responses.count(1)
+
+    estimate = score / total
+
+    return str(estimate)
 
 def mle_estimator(responses, difficulty):
     '''
