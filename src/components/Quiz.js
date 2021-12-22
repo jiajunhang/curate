@@ -81,7 +81,7 @@ const Quiz = ({ data, endQuiz }) => {
 
         setLoading(true);
 
-        if (questionIndex == questions.length) {
+        if (qna.questionIndex == qna.questions.length) {
 
             let clonedQna = { ...qna };
             const questionList = await fetchQuestion();
