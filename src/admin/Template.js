@@ -9,19 +9,18 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
+function createData(name, collection, length, estimator, surveyEnabled) {
+  return { name, collection, length, estimator, surveyEnabled };
 }
 
 const rows = [
-  createData('IS2103 - Group 1', 15, 756, "STD", "Yes"),
-  createData('IS2103 - Group 2', 15, 756, "MLE", "Yes"),
-  createData('IS2103 - Group 3', 15, 756, "EAP", "Yes"),
+  createData('IS2103 - Group 1', "collection_1", 15, "STD", "Yes"),
+  createData('IS2103 - Group 2', "collection_1", 15, "MLE", "Yes"),
+  createData('IS2103 - Group 3', "collection_1", 15, "EAP", "Yes"),
 ];
 
-const Admin = () => {
+const Template = () => {
 
-  
   return (
     <Box
       sx={{
@@ -30,14 +29,14 @@ const Admin = () => {
         flexDirection: 'column',
         alignItems: 'center',
       }}>
-      <Typography>ADMIN PAGE</Typography>
+      <Typography>TEMPLATE PAGE</Typography>
       <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>Quiz Name</TableCell>
+            <TableCell align="right">Collection Name</TableCell>
             <TableCell align="right">Total Length</TableCell>
-            <TableCell align="right">Pool Size</TableCell>
             <TableCell align="right">Estimator</TableCell>
             <TableCell align="right">Survey Enabled</TableCell>
           </TableRow>
@@ -51,10 +50,10 @@ const Admin = () => {
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
+              <TableCell align="right">{row.collection}</TableCell>
+              <TableCell align="right">{row.length}</TableCell>
+              <TableCell align="right">{row.estimator}</TableCell>
+              <TableCell align="right">{row.surveyEnabled}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -64,4 +63,4 @@ const Admin = () => {
   );
 }
 
-export default Admin;
+export default Template;

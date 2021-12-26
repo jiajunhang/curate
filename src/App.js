@@ -8,7 +8,8 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import Layout from './components/Layout';
 import Home from './home/Home';
-import Admin from './admin/Admin';
+import Template from './admin/Template';
+import Data from './admin/Data';
 import QuizList from './quiz/QuizList';
 
 const theme = createTheme({
@@ -31,7 +32,8 @@ const App = () => {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />}></Route>
-            <Route path="/admin" element={<Admin />}></Route>
+            <Route path="/data" element={<Data />}></Route>
+            <Route path="/template" element={<Template />}></Route>
             <Route path="/quiz" element={<QuizList />}></Route>
           </Routes>
         </Layout>
