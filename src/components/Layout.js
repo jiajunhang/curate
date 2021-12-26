@@ -8,14 +8,14 @@ const Layout = ({ children }) => {
     <Fragment>
       <Header />
       <Container maxWidth="md">
-      <main>{children}</main>
+        <main>{children}</main>
       </Container>
     </Fragment>
   );
 };
 
 Layout.propTypes = {
-    children: PropTypes.node
+  children: PropTypes.node
 };
 
 export default Layout;
