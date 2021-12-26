@@ -22,6 +22,9 @@ MONGODB_URI = os.environ['MONGODB_URI']
 client = MongoClient(MONGODB_URI)
 db = client['curate']
 
+pools = db['pools']
+quizzes = db['quizzes']
+
 sample_questions = db['sample_questions']
 #qns = db['questions'] FOR LIVE DATA
 
@@ -35,6 +38,16 @@ def hello_world():
 def get_sample_questions():
     sample = sample_questions.find().sort('difficulty')
     return dumps(list(sample))
+
+@app.route("/pools", methods=['GET'])
+def get_pools():
+    pools_data = pools.find()
+    return dumps(list(pools_data))
+
+@app.route("/quizzes", methods=['GET'])
+def get_quizzes():
+    quizzes_data = quizzes.find()
+    return dumps(list(quizzes_data))
 
 @app.route("/ability_mle", methods=['POST'])
 def ability_mle():
