@@ -74,19 +74,20 @@ const Template = () => {
     setOpen(false);
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setLoading(true);
+
     const body = {
       name: newQuizName,
       collectionId: newQuizCollection,
       length: newQuizLength,
       estimator: newQuizEstimator,
-      survey: newQuizSurvey
+      survey: newQuizSurvey,
+      attempts: 0
     }
-    
-    axios.post(quizzes_api, body).then( res => console.log(res));
-    axios.get(quizzes_api).then(res => setQuizzes(res.data));
 
+    await axios.post(quizzes_api, body).then(res => console.log(res));
+    fetchQuizzes();
     resetDialog();
 
     setLoading(false);
@@ -95,13 +96,18 @@ const Template = () => {
   const quizzes_api = `http://localhost:5000/quizzes`;
   const pools_api = `http://localhost:5000/pools`;
 
-  useEffect(() => {
-    axios.get(quizzes_api)
-      .then(res => setQuizzes(res.data))
+  const fetchQuizzes = () => {
+    axios.get(quizzes_api).then(res => setQuizzes(res.data));
+  }
 
-    axios.get(pools_api)
-    .then(res => setPools(res.data))
-  },)
+  const fetchPools = () => {
+    axios.get(pools_api).then(res => setPools(res.data))
+  }
+
+  useEffect(() => {
+    fetchQuizzes();
+    fetchPools();
+  }, [])
 
   return (
     <>
@@ -114,6 +120,8 @@ const Template = () => {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
+              padding: '20px',
+              marginBottom: 10
             }}>
             <Grid container alignItems="stretch" direction="row" spacing={1}>
               <Grid item xs={12}>
@@ -138,6 +146,7 @@ const Template = () => {
                     <TableCell align="center">Quiz Length</TableCell>
                     <TableCell align="center">Estimator</TableCell>
                     <TableCell align="center">Survey</TableCell>
+                    <TableCell align="center">Attempts</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -153,6 +162,7 @@ const Template = () => {
                       <TableCell align="center">{row.length}</TableCell>
                       <TableCell align="center">{row.estimator}</TableCell>
                       <TableCell align="center">{String(row.survey)}</TableCell>
+                      <TableCell align="center">{row.attempts}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

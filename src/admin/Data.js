@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Loader from '../components/Loader'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -75,6 +76,7 @@ const Data = () => {
 
   return (
     <>
+      {!pools && <Loader/>}
       {pools &&
         <>
           <Box
