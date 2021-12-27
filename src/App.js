@@ -10,7 +10,7 @@ import Layout from './components/Layout';
 import Home from './home/Home';
 import Template from './admin/Template';
 import Data from './admin/Data';
-import QuizList from './quiz/QuizList';
+import QuizList from './experiment/QuizList';
 import QuizSelect from './quiz/QuizSelect';
 import Testlet from './quiz/Testlet';
 

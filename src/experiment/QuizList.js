@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Loader from '../components/Loader';
-import Setup from '../components/Setup';
-import Quiz from '../components/Quiz';
-import Survey from '../components/Survey';
-import Result from '../components/Result';
+import Setup from './Setup';
+import Quiz from './Quiz';
+import Survey from './Survey';
+import Result from './Result';
 
 const QuizList = () => {
 

@@ -11,6 +11,15 @@ const Testlet = () => {
   const [error, setError] = useState(false);
 
   const [selectedQuiz, setSelectedQuiz] = useState(null);
+  const [surveyEnabled, setSurveyEnabled] = useState(null);
+
+  const [data, setData] = useState(null);
+  const [quizData, setQuizData] = useState(null);
+  const [surveyData, setSurveyData] = useState(null);
+
+  const [testStarted, setTestStarted] = useState(false);
+  const [testCompleted, setTestCompleted] = useState(false);
+  const [surveyCompleted, setSurveyCompleted] = useState(false);
 
   const api = `http://localhost:5000/quizzes`;
 
@@ -19,6 +28,7 @@ const Testlet = () => {
       let res = await axios.get(`${api}/${id}`)
       setSelectedQuiz(res);
     } catch (error) {
+      console.log(error);
       setError(true);
     }
   }
@@ -28,7 +38,7 @@ const Testlet = () => {
     getQuizById();
     setLoading(false);
   }, [])
-
+  
   return (
     <>
       {loading && <Loader/>}

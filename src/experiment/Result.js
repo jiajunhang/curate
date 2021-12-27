@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import Loader from './Loader'
+import Loader from '../components/Loader';
 import axios from 'axios';
 
 const Result = ({data, quizData, surveyData}) => {
