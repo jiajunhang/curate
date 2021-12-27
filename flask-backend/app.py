@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_cors import CORS
 from pymongo import MongoClient
 from bson.json_util import dumps, loads
+from bson.objectid import ObjectId
 
 from dotenv import load_dotenv
 
@@ -54,6 +55,13 @@ def get_quizzes():
         print(data)
         newQuiz = quizzes.insert_one(data)
         return dumps(newQuiz.inserted_id)
+
+@app.route("/quizzes/<id>", methods=['GET'])
+def get_quiz_by_id(id):
+
+    res = quizzes.find_one(ObjectId(id))
+    return dumps(res)
+
 
 @app.route("/ability_mle", methods=['POST'])
 def ability_mle():
