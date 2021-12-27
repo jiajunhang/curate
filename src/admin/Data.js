@@ -103,7 +103,7 @@ const Data = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>Pool Name</TableCell>
-                    <TableCell align="center">Collection Name</TableCell>
+                    <TableCell align="center">Collection ID</TableCell>
                     <TableCell align="center">Pool Size</TableCell>
                   </TableRow>
                 </TableHead>
@@ -116,7 +116,7 @@ const Data = () => {
                       <TableCell component="th" scope="row">
                         {row.name}
                       </TableCell>
-                      <TableCell align="center">{row.collection_name}</TableCell>
+                      <TableCell align="center">{row.collectionId}</TableCell>
                       <TableCell align="center">{row.size}</TableCell>
                     </TableRow>
                   ))}

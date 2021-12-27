@@ -44,10 +44,16 @@ def get_pools():
     pools_data = pools.find()
     return dumps(list(pools_data))
 
-@app.route("/quizzes", methods=['GET'])
+@app.route("/quizzes", methods=['GET', 'POST'])
 def get_quizzes():
-    quizzes_data = quizzes.find()
-    return dumps(list(quizzes_data))
+    if request.method == 'GET':
+        quizzes_data = quizzes.find()
+        return dumps(list(quizzes_data))
+    elif request.method == 'POST':
+        data = request.get_json()
+        print(data)
+        newQuiz = quizzes.insert_one(data)
+        return dumps(newQuiz.inserted_id)
 
 @app.route("/ability_mle", methods=['POST'])
 def ability_mle():

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Loader from '../components/Loader';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -17,28 +18,39 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 
-const Input = styled('input')({
-  display: 'none',
-});
+const estimators = ["STD", "MLE", "EAP"];
+const lengths = [1, 5, 10, 15];
 
 const Template = () => {
 
+  const [loading, setLoading] = useState(false);
+
   const [quizzes, setQuizzes] = useState(null);
   const [pools, setPools] = useState(null);
-
   const [open, setOpen] = useState(false);
-  const [newQuizName, setNewQuizName] = useState("");
-  const [newQuizLength, setNewQuizLength] = useState();
-  const [newQuizEstimator, setNewQuizEstimator] = useState("");
-  const [newQuizSurvey, setNewQuizSurvey] = useState(false);
+
+  const [newQuizName, setNewQuizName] = useState('');
+  const [newQuizCollection, setNewQuizCollection] = useState('');
+  const [newQuizLength, setNewQuizLength] = useState('');
+  const [newQuizEstimator, setNewQuizEstimator] = useState('');
+  const [newQuizSurvey, setNewQuizSurvey] = useState('');
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const handleNameChange = (e) => {
     setNewQuizName(e.target.value);
+  }
+
+  const handleCollectionChange = (e) => {
+    setNewQuizCollection(e.target.value);
   }
 
   const handleLengthChange = (e) => {
@@ -53,29 +65,48 @@ const Template = () => {
     setNewQuizSurvey(e.target.value);
   }
 
-  const handleSubmit = () => {
-    const body = {
-    }
+  const resetDialog = () => {
+    setNewQuizName('');
+    setNewQuizCollection('');
+    setNewQuizLength('');
+    setNewQuizEstimator('');
+    setNewQuizSurvey('');
+    setOpen(false);
+  }
 
-    console.log("Call api to create new quiz");
+  const handleSubmit = () => {
+    setLoading(true);
+    const body = {
+      name: newQuizName,
+      collectionId: newQuizCollection,
+      length: newQuizLength,
+      estimator: newQuizEstimator,
+      survey: newQuizSurvey
+    }
+    
+    axios.post(quizzes_api, body).then( res => console.log(res));
+    axios.get(quizzes_api).then(res => setQuizzes(res.data));
+
+    resetDialog();
+
+    setLoading(false);
   }
 
   const quizzes_api = `http://localhost:5000/quizzes`;
   const pools_api = `http://localhost:5000/pools`;
 
   useEffect(() => {
-    console.log("useeffect")
-
     axios.get(quizzes_api)
       .then(res => setQuizzes(res.data))
 
     axios.get(pools_api)
-      .then(res => setPools(res.data))
-  }, [])
+    .then(res => setPools(res.data))
+  },)
 
   return (
     <>
-      {pools &&
+      { (!quizzes || loading) && <Loader/>}
+      {quizzes &&
         <>
           <Box
             sx={{
@@ -103,7 +134,7 @@ const Template = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>Quiz Name</TableCell>
-                    <TableCell align="center">Collection</TableCell>
+                    <TableCell align="center">Collection ID</TableCell>
                     <TableCell align="center">Quiz Length</TableCell>
                     <TableCell align="center">Estimator</TableCell>
                     <TableCell align="center">Survey</TableCell>
@@ -118,7 +149,7 @@ const Template = () => {
                       <TableCell component="th" scope="row">
                         {row.name}
                       </TableCell>
-                      <TableCell align="center">{row.collection}</TableCell>
+                      <TableCell align="center">{row.collectionId}</TableCell>
                       <TableCell align="center">{row.length}</TableCell>
                       <TableCell align="center">{row.estimator}</TableCell>
                       <TableCell align="center">{String(row.survey)}</TableCell>
@@ -129,28 +160,79 @@ const Template = () => {
             </TableContainer>
 
             <Dialog open={open} onClose={handleClose}>
-              <DialogTitle>Create New Pool</DialogTitle>
+              <DialogTitle>Create New Quiz</DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                  To subscribe to this website, please enter your email address here. We
-                  will send updates occasionally.
+                  Fill in the configuration for the new quiz.
                 </DialogContentText>
+                <Stack spacing={1}>
                 <TextField
                   margin="dense"
                   id="Quiz Name"
                   label="Quiz Name"
                   fullWidth
+                  value={newQuizName}
                   variant="standard"
                   onChange={handleNameChange}
                 />
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Collection</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={newQuizCollection}
+                    label="Collection"
+                    onChange={handleCollectionChange}
+                  >
+                    {pools && pools.map((pool, idx) =>
+                      <MenuItem key={idx} value={pool.collectionId}>{pool.name}</MenuItem>
+                    )}
+                  </Select>
+                </FormControl>
+                <FormControl fullWidth>
+                  <InputLabel>Estimator</InputLabel>
+                  <Select
+                    value={newQuizEstimator}
+                    label="Estimator"
+                    onChange={handleEstimatorChange}
+                  >
+                    {estimators.map((e, idx) =>
+                      <MenuItem key={idx} value={e}>{e}</MenuItem>
+                    )}
+                  </Select>
+                </FormControl>
+                <FormControl fullWidth>
+                  <InputLabel>Quiz Length</InputLabel>
+                  <Select
+                    value={newQuizLength}
+                    label="Quiz Length"
+                    onChange={handleLengthChange}
+                  >
+                    {lengths.map((e, idx) =>
+                      <MenuItem key={idx} value={e}>{e}</MenuItem>
+                    )}
+                  </Select>
+                </FormControl>
+                <FormControl fullWidth>
+                  <InputLabel>Survey Enabled</InputLabel>
+                  <Select
+                    value={newQuizSurvey}
+                    label="Survey Enabled"
+                    onChange={handleSurveyChange}
+                  >
+                    <MenuItem value={true}>Yes</MenuItem>
+                    <MenuItem value={false}>No</MenuItem>
+                  </Select>
+                </FormControl>
+                </Stack>
               </DialogContent>
               <DialogActions>
-                <Button variant="contained" onClick={handleClose} sx={{
+                <Button variant="contained" onClick={handleSubmit} sx={{
                   bgcolor: 'button.primary',
                   '&:hover': {
                     bgcolor: 'button.secondary'
                   }
-                }}>Upload</Button>
+                }}>Create New Quiz</Button>
               </DialogActions>
             </Dialog>
 
