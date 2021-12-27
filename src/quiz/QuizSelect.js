@@ -28,7 +28,6 @@ const QuizSelect = () => {
   useEffect(() => {
     setLoading(true);
     fetchQuizzes();
-    console.log(JSON.stringify(quizzes))
     setLoading(false);
   }, []);
 

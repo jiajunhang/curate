@@ -4,24 +4,28 @@ import {useParams} from 'react-router-dom';
 import Loader from '../components/Loader';
 
 const Testlet = () => {
+  
+  const { id } = useParams();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+
   const [selectedQuiz, setSelectedQuiz] = useState(null);
-  const { id } = useParams();
 
   const api = `http://localhost:5000/quizzes`;
 
-  const getQuizById = (id) => {
-      axios.get(`${api}/${id}`)
-      .then(res => setSelectedQuiz(res))
-      .catch( () => setError(true));
+  const getQuizById = async () => {
+    try {
+      let res = await axios.get(`${api}/${id}`)
+      setSelectedQuiz(res);
+    } catch (error) {
+      setError(true);
+    }
   }
 
   useEffect(() => {
     setLoading(true);
-    getQuizById(id);
-    console.log(JSON.stringify(selectedQuiz))
+    getQuizById();
     setLoading(false);
   }, [])
 
