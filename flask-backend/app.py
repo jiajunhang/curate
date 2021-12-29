@@ -192,6 +192,61 @@ def get_survey_questions():
     surveyQn = survey.find();
     return dumps(list(surveyQn))
 
+
+@app.route("/submit_adaptive_quiz", methods=['POST'])
+def submit_adaptive_quiz():
+    body = request.get_json()
+    print("body:")
+    print(body)
+
+    data = body['data']
+    quiz_data = body['quizData']
+    survey_data = quiz_data['survey']
+
+    group = data['quiz']['estimator']
+    questions = quiz_data['questions']
+    responses = quiz_data['responses']
+
+    if group == "STD":
+        estimator = standard_estimator
+        est_text = "N.A"
+    elif group == "MLE":
+        estimator = mle_estimator
+        est_text = "MLE"
+    else:
+        estimator = eap_estimator
+        est_text = "EAP"
+    
+    correct_answers = list(map(lambda x: x['correct'], questions))
+    mapped_responses = list(map(lambda x, y: response_helper(x, y), correct_answers, responses))
+    
+    final_estimate = getEstimate(estimator, questions, responses)
+
+    res = {
+        "summary" : {
+            "name": data['name'],
+            "matric": data['matric'],
+            "estimator": est_text,
+            "ability": final_estimate,
+            "total_questions": len(questions),
+            "total_correct": mapped_responses.count(1)
+        },
+        "detail": {
+            "questions": list(map(lambda x:x['index'], questions)),
+            "responses": responses,
+            "accuracy": mapped_responses
+        },
+        "survey": {
+            "likert_score": sum(survey_data['answers'])
+        }
+    }
+    print("res:")
+    print(res)
+
+    #TODO: persist into mongoDB
+    return res
+
+
 @app.route("/submit_quiz", methods=['POST'])
 def submit_quiz():
     body = request.get_json()
