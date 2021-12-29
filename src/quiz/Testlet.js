@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Loader from '../components/Loader';
 import Setup from './Setup';
 import Quiz from './Quiz';
+import Result from './Result';
 
 const Testlet = () => {
 
@@ -71,9 +72,9 @@ const Testlet = () => {
       {!loading && !testCompleted && selectedQuiz &&
         <Quiz selectedQuiz={selectedQuiz} endQuiz={endQuiz} />
       }
-      {/* {!loading && quizCompleted &&
+      {!loading && testCompleted &&
         <Result data={data} quizData={quizData}/>
-      } */}
+      }
     </>
   );
 }
