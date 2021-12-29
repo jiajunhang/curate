@@ -86,11 +86,56 @@ def ability_eap():
     ability = girth.ability_eap(responses, difficulty, np.ones_like(responses))
     return str(ability[0])
 
-""" TODO: Implementation for get question
-        1. Input params: (ability estimate, list of question indices)
-        2. Based on ability estimate, retrieve window of items +- 0.2
-        3. Select randomly without repeat
-        4. Error handling: IF can't find question, we by default administer from isolated pool
+"""
+V2: Parameterized DB collection name
+"""
+@app.route("/get_questions/<collectionId>", methods=['POST'])
+def get_questions_by_id(collectionId):
+    '''
+    Return test/quiz list of questions
+        Parameters:
+            group: callback func to calculate either using maximum likelihood or bayesian
+            questions: list containing existing questions in JSON
+            responses: list containing responses in int format
+        Returns:
+            questions: updated list of questions
+    '''
+    body = request.get_json()
+    #print(body)
+
+    # Extract fields from request body
+    group = body['group']
+    currentQuestions = body['questions']
+    currentResponses = body['responses']
+
+    print(group)
+    # Selecting estimator
+    if group == "STD":
+        estimator = standard_estimator
+    elif group == "MLE":
+        estimator = mle_estimator
+    else:
+        estimator = eap_estimator
+
+    # Calculate current estimate based on responses thus far
+    currentEstimate = getEstimate(estimator, currentQuestions, currentResponses)
+    print('currentEstimate: ' + currentEstimate)
+
+    # Item selection based on Maximum Fisher Information
+    if group == "STD":
+        print("going into STD handling")
+        nextQuestion = getRandomQuestionById(collectionId, currentQuestions)
+    else:
+        print("going into ADAPTIVE handling")
+        nextQuestion = getQuestionByIdEstimate(collectionId, currentQuestions, currentEstimate)
+
+    currentQuestions.append(nextQuestion)
+
+    return dumps(currentQuestions)
+
+
+"""
+V1: Simple get with hardcoded DB collection
 """
 @app.route("/get_questions", methods=['POST'])
 def get_questions():
@@ -229,6 +274,58 @@ def getEstimate(estimator, currentQuestions, currentResponses):
     ability_estimate = estimator(mapped_responses, question_difficulties)
 
     return ability_estimate
+
+
+
+def getQuestionByIdEstimate(collectionId, currentQuestions, currentEstimate):
+
+    collection = db[collectionId]
+    all_qns = list(collection.find())
+
+    currentEstimate = float(currentEstimate)
+    print("pre clone db")
+
+    # Clone DB & remove used indices
+    qn_pool = [x for x in all_qns if x not in currentQuestions]
+    print("post clone db")
+    print(type(qn_pool))
+
+    # Clone question into difficulty
+    difficulty_pool = list(map(lambda x:x['difficulty'], qn_pool))
+    print("post map difficulty")
+
+    # Perform binary search
+    lo = 0
+    hi = len(difficulty_pool)-1
+    res = -1
+
+    while lo <= hi:
+        mid = (lo+hi) // 2
+        
+        if difficulty_pool[mid] <= currentEstimate:
+            lo = mid+1
+        else:
+            hi = mid-1
+    
+    res = mid
+    nextQn = qn_pool[res]
+
+    return nextQn
+
+def getRandomQuestionById(collectionId, currentQuestions):
+    print("getRandQnById")
+    collection = db[collectionId]
+    all_qns = list(collection.find())
+    print(len(all_qns))
+    qn_pool = [x for x in all_qns if x not in currentQuestions]
+
+    random_index = random.randint(0,len(qn_pool)-1)
+
+    nextQn = qn_pool[random_index]
+
+    return nextQn
+
+
 
 '''
 TODO: 
