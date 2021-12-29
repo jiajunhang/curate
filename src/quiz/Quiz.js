@@ -13,10 +13,10 @@ import Divider from '@mui/material/Divider';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import TextField from '@mui/material/TextField';
+import Survey from './Survey';
 
 const Quiz = ({ selectedQuiz, endQuiz }) => {
 
-  console.log(JSON.stringify(selectedQuiz))
   const { _id: { $oid: quizId }, quizName, estimator, length: testLen, survey, collectionId } = selectedQuiz;
 
   const questions = [];
@@ -29,7 +29,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
     answers: answers
   }
 
-  const [surveyEnabled, setSurveyEnabled] = useState(survey);
+  const [startSurvey, setStartSurvey] = useState(false);
 
   const [begin, setBegin] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -152,11 +152,27 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
 
     setLoading(true);
 
+    if (!survey) {
+      const quizData = {
+        questions: qna.questions,
+        responses: qna.answers
+      }
+  
+      endQuiz(data, quizData);
+    } else {
+      setStartSurvey(true);
+    }
+    setLoading(false);
+  }
+
+  const endSurvey = (surveyData) => {
+    setLoading(true);
     const quizData = {
       questions: qna.questions,
-      responses: qna.answers
+      responses: qna.answers,
+      survey: surveyData
     }
-
+    
     endQuiz(data, quizData);
     setLoading(false);
   }
@@ -192,7 +208,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
       >
         Please select an answer for Question {qna.questionIndex} before proceeding.
       </Alert>}
-      {!begin && !loading &&
+      {!begin && !loading && 
         <>
           <Box sx={{
             marginTop: 10,
@@ -231,7 +247,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
           </Box>
         </>
       }
-      {begin && !loading &&
+      {begin && !loading && !startSurvey &&
         <>
           <Box sx={{
             marginTop: 10,
@@ -294,6 +310,9 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
             </Grid>
           </Box>
         </>}
+        {!loading && startSurvey &&
+          <Survey endSurvey={endSurvey}></Survey>
+        }
     </>
   );
 }
