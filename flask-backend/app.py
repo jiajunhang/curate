@@ -30,6 +30,7 @@ sample_questions = db['sample_questions']
 #qns = db['questions'] FOR LIVE DATA
 
 survey = db['survey']
+results = db['results']
 
 @app.route("/")
 def hello_world():
@@ -201,10 +202,16 @@ def submit_adaptive_quiz():
 
     data = body['data']
     quiz_data = body['quizData']
-    survey_data = quiz_data['survey']
+
+    if 'survey' in quiz_data:
+        survey_data = quiz_data['survey'] 
+    else:
+        survey_data = "N.A"
 
     group = data['quiz']['estimator']
     questions = quiz_data['questions']
+    print("questions:")
+    print(questions)
     responses = quiz_data['responses']
 
     if group == "STD":
@@ -223,7 +230,9 @@ def submit_adaptive_quiz():
     final_estimate = getEstimate(estimator, questions, responses)
 
     res = {
+        "quizId": data['quiz']['_id']['$oid'],
         "summary" : {
+            "quiz_name": data['quiz']['name'],
             "name": data['name'],
             "matric": data['matric'],
             "estimator": est_text,
@@ -232,20 +241,27 @@ def submit_adaptive_quiz():
             "total_correct": mapped_responses.count(1)
         },
         "detail": {
-            "questions": list(map(lambda x:x['index'], questions)),
-            "responses": responses,
-            "accuracy": mapped_responses
+            "questions": list(map(lambda x: parseQuestions(x), questions)),
+            "responses": responses
         },
         "survey": {
-            "likert_score": sum(survey_data['answers'])
+            "likert_score": "N.A" if survey_data == "N.A" else sum(survey_data['answers']) 
         }
     }
     print("res:")
     print(res)
 
+    inserted = results.insert_one(res)
     #TODO: persist into mongoDB
-    return res
+    return dumps(res)
 
+def parseQuestions(question):
+    oid = question['_id']['$oid']
+    question['_id'] = ObjectId(oid)
+
+    print("parsed:")
+    print(question)
+    return question
 
 @app.route("/submit_quiz", methods=['POST'])
 def submit_quiz():

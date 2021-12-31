@@ -41,6 +41,8 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
   const [data, setData] = useState(null);
   const [qna, setQna] = useState(qna_init);
 
+  const [logs, setLogs] = useState([]);
+
   useEffect(() => {
     console.log(JSON.stringify(qna));
   }, [qna])
@@ -183,7 +185,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
     let clonedQna = { ...qna };
     let idx = clonedQna.questionIndex;
     clonedQna.answers[idx - 1] = parseInt(e.target.value);
-
+    
     setQna(clonedQna);
   }
 
