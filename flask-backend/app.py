@@ -3,6 +3,7 @@ from flask_cors import CORS
 from pymongo import MongoClient
 from bson.json_util import dumps, loads
 from bson.objectid import ObjectId
+from estimators import getEstimate, standard_estimator, mle_estimator, eap_estimator
 
 from dotenv import load_dotenv
 
@@ -62,30 +63,6 @@ def get_quiz_by_id(id):
 
     res = quizzes.find_one(ObjectId(id))
     return dumps(res)
-
-
-@app.route("/ability_mle", methods=['POST'])
-def ability_mle():
-    data = request.get_json()
-
-    responses = np.array([data['responses']]).T
-    difficulty = np.array(data['difficulty'])
-
-    ability = girth.ability_mle(responses, difficulty, np.ones_like(responses))
-
-    #TODO: validation check for NaN values and handling
-
-    return str(ability[0])
-
-@app.route("/ability_eap", methods=['POST'])
-def ability_eap():
-    data = request.get_json()
-
-    responses = np.array([data['responses']]).T
-    difficulty = np.array(data['difficulty'])
-
-    ability = girth.ability_eap(responses, difficulty, np.ones_like(responses))
-    return str(ability[0])
 
 """
 V2: Parameterized DB collection name
@@ -255,14 +232,6 @@ def submit_adaptive_quiz():
     #TODO: persist into mongoDB
     return dumps(res)
 
-def parseQuestions(question):
-    oid = question['_id']['$oid']
-    question['_id'] = ObjectId(oid)
-
-    print("parsed:")
-    print(question)
-    return question
-
 @app.route("/submit_quiz", methods=['POST'])
 def submit_quiz():
     body = request.get_json()
@@ -316,37 +285,6 @@ def submit_quiz():
 
     #TODO: persist into mongoDB
     return res
-
-def response_helper(x, y):
-    if x == y:
-        return 1
-    else:
-        return 0
-
-
-def getEstimate(estimator, currentQuestions, currentResponses):
-    '''
-    Return estimate based on selected estimator
-        Parameters:
-            estimator: callback func to calculate either using maximum likelihood or bayesian
-            currentQuestions: list containing existing questions in JSON
-            currentQuestions: list containing responses in int format
-        Returns:
-            ability_estimate: decimal estimate of student ability
-    '''
-    if (len(currentQuestions) == 0):
-        return str(0)
-    
-    question_difficulties = list(map(lambda x: x['difficulty'], currentQuestions))
-
-    correct_answers = list(map(lambda x: x['correct'], currentQuestions))
-    mapped_responses = list(map(lambda x, y: response_helper(x, y), correct_answers, currentResponses))
-
-    ability_estimate = estimator(mapped_responses, question_difficulties)
-
-    return ability_estimate
-
-
 
 def getQuestionByIdEstimate(collectionId, currentQuestions, currentEstimate):
 
@@ -448,56 +386,16 @@ def getRandomQuestion(currentQuestions):
 
     return nextQn
 
-def standard_estimator(responses, difficulty):
-    total = len(responses)
-    score = responses.count(1)
+def parseQuestions(question):
+    oid = question['_id']['$oid']
+    question['_id'] = ObjectId(oid)
 
-    estimate = score / total
+    print("parsed:")
+    print(question)
+    return question
 
-    return str(estimate)
-
-def mle_estimator(responses, difficulty):
-    '''
-    Return MLE estimate
-        Parameters:
-            responses: list containing mapped responses (correct/incorrect)
-            difficulty: list containing difficulty of questions in decimal format
-        Returns:
-            ability: decimal estimate of student ability
-    '''
-    np_responses = np.array([responses]).T
-    np_difficulty = np.array(difficulty)
-
-    ability = girth.ability_mle(np_responses, np_difficulty, np.ones_like(responses))
-
-    '''
-    Scaled increment/decrement if responses are all correct/wrong
-    e.g. last ability is 0, correct:
-            3-0=3; 3/3=1, estimate = ~1
-    e.g. last ability is 1.5, correct:
-            3-1.5=1.5; 1.5/3=0.5, estimate = ~2
-    '''
-    if np.isnan(ability[0]):
-        last_difficulty = abs(np_difficulty[len(np_difficulty)-1])
-        diff = (3 - last_difficulty) / 3
-        is_correct = np_responses[len(np_responses)-1]
-
-        res = last_difficulty + diff if is_correct == 1 else last_difficulty - diff
-        return str(res)
+def response_helper(x, y):
+    if x == y:
+        return 1
     else:
-        return str(ability[0])
-
-def eap_estimator(responses, difficulty):
-    '''
-    Return EAP estimate
-        Parameters:
-            responses: list containing mapped responses (correct/incorrect)
-            difficulty: list containing difficulty of questions in decimal format
-        Returns:
-            ability: decimal estimate of student ability
-    '''
-    np_responses = np.array([responses]).T
-    np_difficulty = np.array(difficulty)
-    ability = girth.ability_eap(np_responses, np_difficulty, np.ones_like(responses))
-
-    return str(ability[0])
+        return 0
