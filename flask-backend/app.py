@@ -225,12 +225,36 @@ def submit_adaptive_quiz():
             "likert_score": "N.A" if survey_data == "N.A" else sum(survey_data['answers']) 
         }
     }
-    print("res:")
-    print(res)
 
     inserted = results.insert_one(res)
-    #TODO: persist into mongoDB
+
+    quizId = data['quiz']['_id']['$oid']
+    incrementQuizAttempt(quizId)
+    incrementQuestionStats(quizId, questions, mapped_responses)
+
     return dumps(res)
+
+def incrementQuizAttempt(quizId):
+    quizObjId = ObjectId(quizId)
+    res = quizzes.update_one( {'_id': quizObjId}, { '$inc': {'attempts': 1} })
+    return res
+
+def incrementQuestionStats(quizId, questions, mapped_responses):
+    selectedQuiz = quizzes.find_one( {'_id': ObjectId(quizId) } )
+    collectionId = selectedQuiz['collectionId']
+    
+    selectedCollection = db[collectionId]
+
+    for i in range(len(questions)):
+        currentQn = questions[i]
+        oid = currentQn['_id']
+        response = mapped_responses[i]
+
+        if response == 0:
+            selectedCollection.update_one( {'_id': oid}, { '$inc': { 'total_attempts': 1} } )
+        elif response == 1:
+            selectedCollection.update_one( {'_id': oid}, { '$inc': { 'total_attempts': 1, 'total_correct': 1 } } )
+        
 
 @app.route("/submit_quiz", methods=['POST'])
 def submit_quiz():
