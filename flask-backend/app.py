@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from bson.json_util import dumps, loads
 from bson.objectid import ObjectId
 from estimators import getEstimate, standard_estimator, mle_estimator, eap_estimator
+from datetime import datetime
 
 from dotenv import load_dotenv
 
@@ -62,6 +63,12 @@ def get_quizzes():
 def get_quiz_by_id(id):
 
     res = quizzes.find_one(ObjectId(id))
+    return dumps(res)
+
+@app.route("/results/<quizId>", methods=['GET'])
+def get_results_by_quizId(quizId):
+    res = results.find( {'quizId': quizId} )
+
     return dumps(res)
 
 """
@@ -208,6 +215,7 @@ def submit_adaptive_quiz():
 
     res = {
         "quizId": data['quiz']['_id']['$oid'],
+        "datetime": datetime.now().strftime("%d %B %Y, %H:%M:%S"),
         "summary" : {
             "quiz_name": data['quiz']['name'],
             "name": data['name'],

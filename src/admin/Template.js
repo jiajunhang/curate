@@ -23,6 +23,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
+import { Link } from "react-router-dom";
 
 const estimators = ["STD", "MLE", "EAP"];
 const lengths = [1, 5, 10, 15];
@@ -155,7 +156,13 @@ const Template = () => {
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                       <TableCell component="th" scope="row">
-                        {row.name}
+                        <MenuItem component={Link} to={{
+                          pathname: `/template/${row._id.$oid}`,
+                          state: { selectedQuiz: row }
+                        }}
+                        >
+                          {row.name}
+                        </MenuItem>
                       </TableCell>
                       <TableCell align="center">{row.collectionId}</TableCell>
                       <TableCell align="center">{row.length}</TableCell>
