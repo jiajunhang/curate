@@ -197,6 +197,9 @@ def submit_adaptive_quiz():
     print("questions:")
     print(questions)
     responses = quiz_data['responses']
+    logs = quiz_data['logs']
+    print("logs:")
+    print(logs)
 
     if group == "STD":
         estimator = standard_estimator

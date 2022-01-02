@@ -6,7 +6,6 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import axios from 'axios';
 import Loader from '../components/Loader';
-import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
@@ -14,6 +13,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import TextField from '@mui/material/TextField';
 import Survey from './Survey';
+import Snackbar from '@mui/material/Snackbar';
 
 const Quiz = ({ selectedQuiz, endQuiz }) => {
 
@@ -107,22 +107,23 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
 
     setLoading(true);
 
-    if (qna.questionIndex == qna.questions.length) {
+    let clonedQna = { ...qna };
 
-      let clonedQna = { ...qna };
+    let logEntry = {
+      "index": clonedQna.questionIndex,
+      "action": "NEXT"
+    };
+    setLogs(oldLogs => [...oldLogs, logEntry]);
+
+    clonedQna.questionIndex++;
+
+    if (qna.questionIndex == qna.questions.length) {
       const questionList = await fetchQuestion();
       clonedQna.questions = questionList;
-      clonedQna.questionIndex++;
-
-      setQna(clonedQna);
-
-    } else {
-
-      let clonedQna = { ...qna }
-      clonedQna.questionIndex++;
-
-      setQna(clonedQna);
     }
+
+    setQna(clonedQna);
+
     setLoading(false);
   }
 
@@ -139,6 +140,13 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
     setLoading(true)
 
     let clonedQna = { ...qna };
+
+    let logEntry = {
+      "index": clonedQna.questionIndex,
+      "action": "PREVIOUS"
+    };
+    setLogs(oldLogs => [...oldLogs, logEntry]);
+
     clonedQna.questionIndex--;
     setQna(clonedQna);
 
@@ -157,7 +165,8 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
     if (!survey) {
       const quizData = {
         questions: qna.questions,
-        responses: qna.answers
+        responses: qna.answers,
+        logs: logs
       }
   
       endQuiz(data, quizData);
@@ -172,6 +181,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
     const quizData = {
       questions: qna.questions,
       responses: qna.answers,
+      logs: logs,
       survey: surveyData
     }
     
@@ -184,16 +194,37 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
 
     let clonedQna = { ...qna };
     let idx = clonedQna.questionIndex;
-    clonedQna.answers[idx - 1] = parseInt(e.target.value);
+    let selectedAns = parseInt(e.target.value);
+    clonedQna.answers[idx - 1] = selectedAns
     
+    if (clonedQna.questions[idx-1].correct === selectedAns) {
+      let logEntry = {
+        "index": clonedQna.questionIndex,
+        "action": "SELECT_CORRECT",
+        "selected": selectedAns
+      };
+      setLogs(oldLogs => [...oldLogs, logEntry]);
+    } else {
+      let logEntry = {
+        "index": clonedQna.questionIndex,
+        "action": "SELECT_WRONG",
+        "selected": selectedAns
+      };
+      setLogs(oldLogs => [...oldLogs, logEntry]);
+    }
+
     setQna(clonedQna);
   }
 
   return (
     <>
       {loading && <Loader></Loader>}
-      {error && <Alert
-        severity="warning"
+      {error && 
+        <Snackbar
+        open={error}
+        onClose={() => setError(false)}
+        autoHideDuration={4000}
+        message={`Please select an option before progressing.`}
         action={
           <IconButton
             aria-label="close"
@@ -207,9 +238,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
           </IconButton>
         }
         sx={{ mb: 2 }}
-      >
-        Please select an answer for Question {qna.questionIndex} before proceeding.
-      </Alert>}
+      ></Snackbar>}
       {!begin && !loading && 
         <>
           <Box sx={{

@@ -105,7 +105,7 @@ const Result = ({ data, quizData }) => {
                   <Grid item md={12}>
                     <Typography>Correct Answer: {qn[1].correct}</Typography>
                     {qn[1].explanation && <Typography >{qn[1].explanation}</Typography>}
-                    <Typography >{100 * qn[1]['total_correct'] / qn[1]['total_attempts']}% of students have answered correctly.</Typography>
+                    <Typography >{Math.round(100 * qn[1]['total_correct'] / qn[1]['total_attempts']).toFixed(1)}% of students have answered correctly.</Typography>
                   <p></p>
                   <Divider />
                   </Grid>
