@@ -66,10 +66,11 @@ const TemplateReview = () => {
               padding: '20px',
               marginBottom: 10
             }}>
-            <Grid container alignItems="stretch" direction="row" spacing={1}>
+            <Grid container alignItems="stretch" direction="row" spacing={2}>
               <Grid item md={12}>
-                <TemplateDashboard results={quizResults} />
+                <TemplateDashboard selectedQuiz={selectedQuiz} results={quizResults} />
               </Grid>
+              <br/>
               <Grid item md={12}>
               <TableContainer component={Paper}>
               <Table sx={{ minWidth: 350 }} aria-label="simple table">
@@ -92,7 +93,7 @@ const TemplateReview = () => {
                       <TableCell align="center">{row.summary.name}</TableCell>
                       <TableCell align="center">{row.summary.matric}</TableCell>
                       <TableCell align="center">{row.datetime}</TableCell>
-                      <TableCell align="center">{row.summary.ability}</TableCell>
+                      <TableCell align="center">{parseFloat(row.summary.ability).toFixed(4)}</TableCell>
                       <TableCell align="center">{row.summary.total_correct}</TableCell>
                       <TableCell align="center">{row.summary.total_questions}</TableCell>
                     </TableRow>
