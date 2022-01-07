@@ -14,6 +14,7 @@ import QuizList from './experiment/QuizList';
 import QuizSelect from './quiz/QuizSelect';
 import Testlet from './quiz/Testlet';
 import TemplateReview from './admin/TemplateReview';
+import Result from './quiz/Result';
 
 const theme = createTheme({
   palette: {
@@ -41,6 +42,7 @@ const App = () => {
             <Route path="/quiz" element={<QuizSelect />}></Route>
               <Route path="/quiz/:id" element={<Testlet />}></Route>
             <Route path="/expquiz" element={<QuizList />}></Route>
+            <Route path="/result/:id" element={<Result />}></Route>
           </Routes>
         </Layout>
       </BrowserRouter>

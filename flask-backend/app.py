@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from bson.json_util import dumps, loads
 from bson.objectid import ObjectId
 from estimators import getEstimate, standard_estimator, mle_estimator, eap_estimator
+from detection import process_revisions
 from datetime import datetime
 
 from dotenv import load_dotenv
@@ -69,6 +70,11 @@ def get_quiz_by_id(id):
 def get_results_by_quizId(quizId):
     res = results.find( {'quizId': quizId} )
 
+    return dumps(res)
+
+@app.route("/result/<resultId>", methods=['GET'])
+def get_result_by_resultId(resultId):
+    res = results.find_one(ObjectId(resultId))
     return dumps(res)
 
 """
@@ -201,6 +207,10 @@ def submit_adaptive_quiz():
     print("logs:")
     print(logs)
 
+    revisions = quiz_data['revisions']
+    print("revisions:")
+    print(revisions)
+
     if group == "STD":
         estimator = standard_estimator
         est_text = "N.A"
@@ -234,7 +244,9 @@ def submit_adaptive_quiz():
         },
         "survey": {
             "likert_score": "N.A" if survey_data == "N.A" else sum(survey_data['answers']) 
-        }
+        },
+        "logs": logs,
+        "metrics": process_revisions(revisions)
     }
 
     inserted = results.insert_one(res)
@@ -242,8 +254,10 @@ def submit_adaptive_quiz():
     quizId = data['quiz']['_id']['$oid']
     incrementQuizAttempt(quizId)
     incrementQuestionStats(quizId, questions, mapped_responses)
-
-    return dumps(res)
+    
+    print(inserted.inserted_id)
+    
+    return str(inserted.inserted_id)
 
 def incrementQuizAttempt(quizId):
     quizObjId = ObjectId(quizId)

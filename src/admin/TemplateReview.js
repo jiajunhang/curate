@@ -13,6 +13,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
+import { Link } from "react-router-dom";
+import MenuItem from '@mui/material/MenuItem';
 
 const TemplateReview = () => {
 
@@ -90,7 +92,15 @@ const TemplateReview = () => {
                       key={row.name}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
-                      <TableCell align="center">{row.summary.name}</TableCell>
+                      <TableCell align="center">
+                        <MenuItem component={Link} to={{
+                          pathname: `/result/${row._id.$oid}`,
+                          state: { selectedQuiz: row }
+                        }}
+                        >
+                          {row.summary.name}
+                        </MenuItem>
+                      </TableCell>
                       <TableCell align="center">{row.summary.matric}</TableCell>
                       <TableCell align="center">{row.datetime}</TableCell>
                       <TableCell align="center">{parseFloat(row.summary.ability).toFixed(4)}</TableCell>

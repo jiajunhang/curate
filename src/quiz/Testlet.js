@@ -1,13 +1,12 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Loader from '../components/Loader';
-import Setup from './Setup';
 import Quiz from './Quiz';
 import Result from './Result';
 
 const Testlet = () => {
-
+  const navigate = useNavigate();
   const { id } = useParams();
 
   const [loading, setLoading] = useState(false);
@@ -44,14 +43,29 @@ const Testlet = () => {
     setLoading(false);
   };
 
-  const endQuiz = (data, quizData) => {
+  const endQuiz = async (data, quizData) => {
     setLoading(true);
 
     setData(data);
     setQuizData(quizData);
     setTestCompleted(true);
 
+    const result_id = await submit(data, quizData);
+    navigate(`/result/${result_id}`);
+
     setLoading(false);
+  }
+  
+  const submit_api = `http://localhost:5000/submit_adaptive_quiz`;
+
+  const submit = async (data, quizData) => {
+    const body = {
+      data: data,
+      quizData: quizData,
+    };
+
+    const response = await axios.post(submit_api, body);
+    return response.data;
   }
 
   useEffect(() => {
@@ -71,9 +85,6 @@ const Testlet = () => {
       } */}
       {!loading && !testCompleted && selectedQuiz &&
         <Quiz selectedQuiz={selectedQuiz} endQuiz={endQuiz} />
-      }
-      {!loading && testCompleted &&
-        <Result data={data} quizData={quizData}/>
       }
     </>
   );

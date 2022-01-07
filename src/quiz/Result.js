@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -8,46 +9,32 @@ import Divider from '@mui/material/Divider';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
-const Result = ({ data, quizData }) => {
+const Result = () => {
 
-  const [loading, setLoading] = useState(true);
+  const { id } = useParams();
+
   const [result, setResult] = useState(null);
+  const [error, setError] = useState(false);
 
-  const api = `http://localhost:5000/submit_adaptive_quiz`;
+  const fetch_api = `http://localhost:5000/result/${id}`;
 
   const fetchResult = async () => {
-    const body = {
-      data: data,
-      quizData: quizData,
-    };
-
-    const response = await axios.post(api, body);
-    return response;
-
-    /* const stub = {
-        summary: {
-            name: "jun",
-            matric: "a1234567",
-            estimator: "eap",
-            ability: "1.75643",
-            total_questions: "15",
-            total_correct: "10"
-        }
+    try {
+      const res = await axios.get(fetch_api);
+      return res;
+    } catch (err) {
+      setError(true);
     }
-
-    console.log("stub: " + JSON.stringify(stub))
-    return stub; */
   }
 
   useEffect(() => {
-    setLoading(true)
     fetchResult().then(res => setResult(res.data))
     console.log(result)
-    setLoading(false)
   }, [])
 
   return (
     <>
+      {error && <p>Unable to find Result with ID</p>}
       {(!result || !result.summary) && <Loader></Loader>}
       {result && result.summary &&
         <Box sx={{
@@ -56,6 +43,7 @@ const Result = ({ data, quizData }) => {
           flexDirection: 'column',
           border: 'solid 1px grey',
           padding: '20px',
+          marginBottom: 10
         }}>
           <Grid container spacing={2}>
             <Grid item md={12}>

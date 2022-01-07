@@ -29,6 +29,8 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
     answers: answers
   }
 
+  const revision_init = new Array(testLen).fill().map(e => []);
+
   const [startSurvey, setStartSurvey] = useState(false);
 
   const [begin, setBegin] = useState(false);
@@ -42,6 +44,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
   const [qna, setQna] = useState(qna_init);
 
   const [logs, setLogs] = useState([]);
+  const [revisions, setRevisions] = useState(revision_init);
 
   useEffect(() => {
     console.log(JSON.stringify(qna));
@@ -109,11 +112,11 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
 
     let clonedQna = { ...qna };
 
-    let logEntry = {
+    /* let logEntry = {
       "index": clonedQna.questionIndex,
       "action": "NEXT"
     };
-    setLogs(oldLogs => [...oldLogs, logEntry]);
+    setLogs(oldLogs => [...oldLogs, logEntry]); */
 
     clonedQna.questionIndex++;
 
@@ -141,11 +144,11 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
 
     let clonedQna = { ...qna };
 
-    let logEntry = {
+    /* let logEntry = {
       "index": clonedQna.questionIndex,
       "action": "PREVIOUS"
     };
-    setLogs(oldLogs => [...oldLogs, logEntry]);
+    setLogs(oldLogs => [...oldLogs, logEntry]); */
 
     clonedQna.questionIndex--;
     setQna(clonedQna);
@@ -166,7 +169,8 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
       const quizData = {
         questions: qna.questions,
         responses: qna.answers,
-        logs: logs
+        logs: logs,
+        revisions: revisions
       }
   
       endQuiz(data, quizData);
@@ -182,6 +186,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
       questions: qna.questions,
       responses: qna.answers,
       logs: logs,
+      revisions: revisions,
       survey: surveyData
     }
     
@@ -194,22 +199,35 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
 
     let clonedQna = { ...qna };
     let idx = clonedQna.questionIndex;
+    let difficulty = clonedQna.questions[idx-1].difficulty;
     let selectedAns = parseInt(e.target.value);
     clonedQna.answers[idx - 1] = selectedAns
     
+    let clonedRevisions = { ...revisions };
+
     if (clonedQna.questions[idx-1].correct === selectedAns) {
       let logEntry = {
         "index": clonedQna.questionIndex,
-        "action": "SELECT_CORRECT",
+        "difficulty": difficulty,
+        "action": (idx === clonedQna.questions.length) ? "SELECT_CORRECT" : "MODIFY_CORRECT",
         "selected": selectedAns
       };
+
+      clonedRevisions[idx-1].push(logEntry);
+      setRevisions(clonedRevisions);
+
       setLogs(oldLogs => [...oldLogs, logEntry]);
     } else {
       let logEntry = {
         "index": clonedQna.questionIndex,
-        "action": "SELECT_WRONG",
+        "difficulty": difficulty,
+        "action": (idx === clonedQna.questions.length) ? "SELECT_WRONG" : "MODIFY_WRONG",
         "selected": selectedAns
       };
+
+      clonedRevisions[idx-1].push(logEntry);
+      setRevisions(clonedRevisions);
+
       setLogs(oldLogs => [...oldLogs, logEntry]);
     }
 
