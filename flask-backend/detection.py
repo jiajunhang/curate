@@ -31,7 +31,7 @@ def process_revisions(revisions):
             "last_revision":  lastModification,
             "n2_score": 1 if modified else 0,
             "nc2_score":  1 if lastModification == "MODIFY_CORRECT" else 0,
-            "weighted_nc2": weighted_nc2(difficulty) if modified else 0
+            "weighted_nc2": weighted_nc2(difficulty) if lastModification == "MODIFY_CORRECT" else 0
         }
 
         print(assessment)

@@ -8,6 +8,7 @@ import axios from 'axios';
 import Divider from '@mui/material/Divider';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ResultDashboard from './ResultDashboard';
 
 const Result = () => {
 
@@ -47,6 +48,17 @@ const Result = () => {
         }}>
           <Grid container spacing={2}>
             <Grid item md={12}>
+              <Typography variant="h4">Cheating Indicators</Typography>
+            </Grid>
+            <Grid item md={12}>
+              <ResultDashboard result={result}></ResultDashboard>
+            </Grid>
+          </Grid>
+          <br />
+          <Divider />
+          <br />
+          <Grid container spacing={2}>
+            <Grid item md={12}>
               <Typography variant="h4">Performance Summary</Typography>
             </Grid>
             {Object.entries(result.summary).map(([k, v], i) =>
@@ -80,7 +92,7 @@ const Result = () => {
                     <ToggleButtonGroup disabled orientation="vertical" fullWidth={true}>
                       {console.log(qn[1].options)}
                       {qn[1].options && qn[1].options.map((e, idx) =>
-                        <ToggleButton key={idx + 1} value={idx+1} selected={result.detail.responses[i] === idx + 1} label={idx + 1 + ". " + e} sx={{
+                        <ToggleButton key={idx + 1} value={idx + 1} selected={result.detail.responses[i] === idx + 1} label={idx + 1 + ". " + e} sx={{
                           justifyContent: "flex-start"
                         }}>
                           {console.log('idx:' + idx)}
@@ -94,8 +106,8 @@ const Result = () => {
                     <Typography>Correct Answer: {qn[1].correct}</Typography>
                     {qn[1].explanation && <Typography >{qn[1].explanation}</Typography>}
                     <Typography >{(100 * qn[1]['total_correct'] / qn[1]['total_attempts']).toFixed(2)}% of students have answered correctly.</Typography>
-                  <p></p>
-                  <Divider />
+                    <p></p>
+                    <Divider />
                   </Grid>
                 </>
               )}
