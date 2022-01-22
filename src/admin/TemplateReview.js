@@ -57,7 +57,7 @@ const TemplateReview = () => {
     <>
       {loading && <Loader />}
       {error && <p>Unable to find Quiz with ID</p>}
-      {!error && !loading && quizResults && quizResults.length > 0 &&
+      {!error && !loading && selectedQuiz && quizResults && quizResults.length > 0 &&
         <>
           <Box
             sx={{
