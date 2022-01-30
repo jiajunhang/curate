@@ -35,11 +35,16 @@ const Header = () => {
               Quiz
             </Typography>
           </MenuItem>
-          <MenuItem component={Link} to={'/expquiz'} key="expquiz" >
+          <MenuItem component={Link} to={'/calibration'} key="calibration" >
+            <Typography textAlign="center">
+              Calibration
+            </Typography>
+          </MenuItem>
+          {/* <MenuItem component={Link} to={'/expquiz'} key="expquiz" >
             <Typography textAlign="center">
               ExpQuiz
             </Typography>
-          </MenuItem>
+          </MenuItem> */}
         </Toolbar>
       </AppBar>
     </Box>

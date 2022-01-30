@@ -39,6 +39,11 @@ results = db['results']
 def hello_world():
   return "Hello, World!"
 
+@app.route("/get_calibration_questions", methods=['GET'])
+def get_calibration_questions():
+    calib_qn = db['python_bank'].find()
+    return dumps(list(calib_qn))
+    
 @app.route("/sample_questions", methods=['GET'])
 def get_sample_questions():
     sample = sample_questions.find().sort('difficulty')

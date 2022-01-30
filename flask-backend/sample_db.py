@@ -56,10 +56,15 @@ survey.insert_many([
 ])
 
 # Get a reference to the 'sample_questions' collection:
-sample_questions = db['sample_questions']
+""" sample_questions = db['sample_questions']
 
 f = open('sample_data.json')
 sample_data = json.load(f)
 
 result = sample_questions.insert_many(sample_data)
-print(result.inserted_ids)
+print(result.inserted_ids) """
+
+python_bank = db['python_bank']
+f = open('python_bank.json')
+python_qns = json.load(f)
+result = python_bank.insert_many(python_qns)
