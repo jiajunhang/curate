@@ -27,6 +27,7 @@ def process_revisions(revisions):
 
         assessment = {
             "index": int(idx)+1,
+            "difficulty": difficulty,
             "selection": lastSelection,
             "last_revision":  lastModification,
             "n2_score": 1 if modified else 0,

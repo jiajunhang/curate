@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, BarChart, Bar, Line, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const ResultDashboard = ({ result }) => {
+
+  const questions = result.detail.questions;
+  const difficulties = questions.map((q) => q.difficulty);
+  console.log(difficulties);
 
   const metrics = result.metrics;
 
@@ -49,7 +53,7 @@ const ResultDashboard = ({ result }) => {
           </Grid>
           <Grid item xs={12}>
             <Paper sx={{ p: 2 }}>
-            <Typography component="h2" variant="h6" gutterBottom>
+              <Typography component="h2" variant="h6" gutterBottom>
                 Weighted-NC2 by Question:
               </Typography>
               {<BarChart
@@ -71,6 +75,24 @@ const ResultDashboard = ({ result }) => {
                 <Bar dataKey="weighted_nc2" fill="#8884d8" />
                 <Bar dataKey="n2_score" fill="#82ca9d" />
               </BarChart>}
+            </Paper>
+          </Grid>
+          <Grid item xs={12}>
+            <Paper sx={{ p: 2 }}>
+              <Typography component="h2" variant="h6" gutterBottom>
+                Difficulty by Question:
+              </Typography>
+              {<LineChart width={730} height={250} data={indiv}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="index" />
+                <YAxis tickCount={30}  type="number" domain={[-3, 3]}  />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="difficulty" stroke="#8884d8" />
+                <Line type="monotone" dataKey="n2_score" stroke="#82ca9d" />
+                <Line type="monotone" dataKey="nc2_score" stroke="#86ca9d" />
+              </LineChart>}
             </Paper>
           </Grid>
         </Grid>
