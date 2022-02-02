@@ -120,10 +120,10 @@ def get_questions_by_id(collectionId):
     # Item selection based on Maximum Fisher Information
     if group == "STD":
         print("going into STD handling")
-        nextQuestion = getRandomQuestionById(collectionId, currentQuestions)
+        nextQuestion = getRandomQuestionById(collectionId, parseAllIds(currentQuestions))
     else:
         print("going into ADAPTIVE handling")
-        nextQuestion = getQuestionByIdEstimate(collectionId, currentQuestions, currentEstimate)
+        nextQuestion = getQuestionByIdEstimate(collectionId, parseAllIds(currentQuestions), currentEstimate)
 
     currentQuestions.append(nextQuestion)
 
@@ -133,7 +133,7 @@ def get_questions_by_id(collectionId):
 """
 V1: Simple get with hardcoded DB collection
 """
-@app.route("/get_questions", methods=['POST'])
+""" @app.route("/get_questions", methods=['POST'])
 def get_questions():
     '''
     Return test/quiz list of questions
@@ -180,7 +180,7 @@ def get_questions():
     #print(type(data))
     #currentList.append(data)
 
-    return dumps(currentQuestions)
+    return dumps(currentQuestions) """
     
 
 @app.route("/get_survey_questions", methods=['GET'])
@@ -344,12 +344,20 @@ def getQuestionByIdEstimate(collectionId, currentQuestions, currentEstimate):
 
     collection = db[collectionId]
     all_qns = list(collection.find())
+    print("\n\n\n*********************** all_qns: " + str(len(all_qns)))
+    print(all_qns[0:3])
+    
+    print("\n\n\n*********************** currentQuestions: " + str(len(currentQuestions)))
+    print(currentQuestions)
 
     currentEstimate = float(currentEstimate)
     print("pre clone db")
 
     # Clone DB & remove used indices
     qn_pool = [x for x in all_qns if x not in currentQuestions]
+    print("*********************** qn_pool: " + str(len(qn_pool)))
+    print(qn_pool[0:3])
+
     print("post clone db")
     print(type(qn_pool))
 
@@ -396,7 +404,7 @@ TODO:
 2. Testing with dummy data
 3. Randomize across neighbors(?)
 '''
-def getQuestionByEstimate(currentQuestions, currentEstimate):
+""" def getQuestionByEstimate(currentQuestions, currentEstimate):
     all_qns = list(sample_questions.find()) # for LIVE, change sample_questions to qns
 
     currentEstimate = float(currentEstimate)
@@ -438,7 +446,12 @@ def getRandomQuestion(currentQuestions):
 
     nextQn = qn_pool[random_index]
 
-    return nextQn
+    return nextQn """
+
+def parseAllIds(qnList):
+    for q in qnList:
+        q = parseQuestions(q)
+    return qnList
 
 def parseQuestions(question):
     oid = question['_id']['$oid']
