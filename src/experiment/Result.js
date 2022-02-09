@@ -10,7 +10,10 @@ const Result = ({data, quizData, surveyData}) => {
     const [loading, setLoading] = useState(true);
     const [result, setResult] = useState(null);
 
-    const api = `http://localhost:5000/submit_quiz`;
+    const host = process.env.REACT_APP_HOST_NAME;
+    const port = process.env.REACT_APP_PORT;
+
+    const api = `http://${host}:${port}/submit_quiz`;
 
     const fetchResult = async () => {
         const body = {

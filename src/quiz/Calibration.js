@@ -25,7 +25,9 @@ const Calibration = () => {
   const [beginCalib, setBeginCalib] = useState(false);
   const [calibData, setCalibData] = useState(calib_init);
 
-  const api = `http://localhost:5000/get_calibration_questions`;
+  const host = process.env.REACT_APP_HOST_NAME;
+  const port = process.env.REACT_APP_PORT;
+  const api = `http://${host}:${port}/get_calibration_questions`;
 
   useEffect(() => {
     //console.log(JSON.stringify(calibData))

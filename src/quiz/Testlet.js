@@ -20,7 +20,9 @@ const Testlet = () => {
   const [testStarted, setTestStarted] = useState(false);
   const [testCompleted, setTestCompleted] = useState(false);
 
-  const api = `http://localhost:5000/quizzes`;
+  const host = process.env.REACT_APP_HOST_NAME;
+  const port = process.env.REACT_APP_PORT;
+  const api = `http://${host}:${port}/quizzes`;
 
   const getQuizById = async () => {
     console.log("get quiz by id")
@@ -56,7 +58,7 @@ const Testlet = () => {
     setLoading(false);
   }
   
-  const submit_api = `http://localhost:5000/submit_adaptive_quiz`;
+  const submit_api = `http://${host}:${port}/submit_adaptive_quiz`;
 
   const submit = async (data, quizData) => {
     const body = {

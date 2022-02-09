@@ -49,7 +49,9 @@ const Survey = ( {data, endSurvey} ) => {
     const [beginSurvey, setBeginSurvey] = useState(false);
     const [surveyData, setSurveyData] = useState(survey_init);
 
-    const api = `http://localhost:5000/get_survey_questions`;
+    const host = process.env.REACT_APP_HOST_NAME;
+    const port = process.env.REACT_APP_PORT;
+    const api = `http://${host}:${port}/get_survey_questions`;
 
     useEffect(() => {
         console.log(JSON.stringify(surveyData))

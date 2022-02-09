@@ -62,8 +62,10 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
 
     await handleNext();
   }
+  const host = process.env.REACT_APP_HOST_NAME;
+  const port = process.env.REACT_APP_PORT;
 
-  const api = `http://localhost:5000/get_questions/${collectionId}`;
+  const api = `http://${host}:${port}/get_questions/${collectionId}`;
 
   const fetchQuestion = async () => {
     console.log("Fetching Question")

@@ -26,8 +26,11 @@ const TemplateReview = () => {
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [quizResults, setQuizResults] = useState(null);
 
-  const quiz_api = `http://localhost:5000/quizzes`;
-  const result_api = `http://localhost:5000/results`;
+  const host = process.env.REACT_APP_HOST_NAME;
+  const port = process.env.REACT_APP_PORT;
+
+  const quiz_api = `http://${host}:${port}/quizzes`;
+  const result_api = `http://${host}:${port}/results`;
 
   const getQuizById = async () => {
     try {

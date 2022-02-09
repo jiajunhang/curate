@@ -66,7 +66,10 @@ const Data = () => {
     console.log("Call api to create question pool");
   }
 
-  const api = `http://localhost:5000/pools`;
+  const host = process.env.REACT_APP_HOST_NAME;
+  const port = process.env.REACT_APP_PORT;
+
+  const api = `http://${host}:${port}/pools`;
 
   useEffect(() => {
     console.log("useeffect")

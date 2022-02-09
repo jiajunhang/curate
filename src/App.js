@@ -17,6 +17,12 @@ import TemplateReview from './admin/TemplateReview';
 import Result from './quiz/Result';
 import Calibration from './quiz/Calibration'
 
+require('dotenv').config();
+
+console.log(process.env)
+console.log(process.env.REACT_APP_HOST_NAME)
+console.log(process.env.REACT_APP_PORT)
+
 const theme = createTheme({
   palette: {
     background: {

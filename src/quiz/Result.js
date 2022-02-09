@@ -17,7 +17,10 @@ const Result = () => {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(false);
 
-  const fetch_api = `http://localhost:5000/result/${id}`;
+  const host = process.env.REACT_APP_HOST_NAME;
+  const port = process.env.REACT_APP_PORT;
+
+  const fetch_api = `http://${host}:${port}/result/${id}`;
 
   const fetchResult = async () => {
     try {

@@ -93,8 +93,11 @@ const Template = () => {
     setLoading(false);
   }
 
-  const quizzes_api = `http://localhost:5000/quizzes`;
-  const pools_api = `http://localhost:5000/pools`;
+  const host = process.env.REACT_APP_HOST_NAME;
+  const port = process.env.REACT_APP_PORT;
+
+  const quizzes_api = `http://${host}:${port}/quizzes`;
+  const pools_api = `http://${host}:${port}/pools`;
 
   const fetchQuizzes = () => {
     axios.get(quizzes_api).then(res => setQuizzes(res.data));
