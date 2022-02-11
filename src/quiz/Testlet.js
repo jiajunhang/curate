@@ -5,6 +5,14 @@ import Loader from '../components/Loader';
 import Quiz from './Quiz';
 import Result from './Result';
 
+/**
+ * This is a wrapper component for Adaptive Quiz
+ * Primarily, it handles collection of:
+ * i. Student Info
+ * ii. Quiz status (start/end)
+ * 
+ * This also submits all relevant data (quiz/response/survey) into flask endpoint
+ */
 const Testlet = () => {
   const navigate = useNavigate();
   const { id } = useParams();

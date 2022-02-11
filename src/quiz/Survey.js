@@ -11,6 +11,10 @@ import axios from 'axios';
 import Loader from '../components/Loader';
 import Divider from '@mui/material/Divider';
 
+/**
+ * This is the Survey component, collects hard-coded survey response, returns
+ * back to Quiz component.
+ */
 const Survey = ( {endSurvey} ) => {
 
     const questions = [];

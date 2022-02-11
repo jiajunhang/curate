@@ -14,6 +14,9 @@ import Grid from '@mui/material/Grid';
 import { Link } from "react-router-dom";
 import MenuItem from '@mui/material/MenuItem';
 
+/**
+ * Component for Adaptive Quiz Selection
+ */
 const QuizSelect = () => {
 
   const [loading, setLoading] = useState(false);

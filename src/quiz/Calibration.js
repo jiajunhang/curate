@@ -6,35 +6,42 @@ import Grid from '@mui/material/Grid';
 import axios from 'axios';
 import Loader from '../components/Loader';
 import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import TextField from '@mui/material/TextField';
 import Snackbar from '@mui/material/Snackbar';
 
+import { useParams, useNavigate } from 'react-router-dom';
+
 const Calibration = () => {
 
   const questions = [];
-  const answers = new Array(198).fill(0);
+  // EDIT: change value to actual number of questions
+  const answers = new Array(19).fill(0);
   const calib_init = {
     questions: questions,
     answers: answers
   }
-
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const [beginCalib, setBeginCalib] = useState(false);
   const [calibData, setCalibData] = useState(calib_init);
+  const [error, setError] = useState(false);
 
   const host = process.env.REACT_APP_HOST_NAME;
   const port = process.env.REACT_APP_PORT;
-  const api = `http://${host}:${port}/get_calibration_questions`;
+  const get_calib_api = `http://${host}:${port}/get_calibration_questions`;
+  const submit_calib_api = `http://${host}:${port}/submit_calibration`;
 
   useEffect(() => {
     //console.log(JSON.stringify(calibData))
   }, [calibData]);
 
   const fetchCalib = async () => {
-    const response = await axios.get(api);
+    const response = await axios.get(get_calib_api);
     return response.data
   }
 
@@ -61,13 +68,53 @@ const Calibration = () => {
     setCalibData(calibCloned);
   }
 
-  const handleComplete = () => {
-    //
+  const handleComplete = async () => {
+    if (hasUnanswered()) {
+      setError(true);
+      return;
+    }
+
+    setLoading(true);
+    const result_id = await submit(calibData);
+    navigate(`/calibration_res/${result_id}`);
+    setLoading(false);
+  }
+
+  const submit = async (data) => {
+    const response = await axios.post(submit_calib_api, data);
+    return response.data;
+  }
+
+  const hasUnanswered = () => {
+    for (let ans of calibData.answers) {
+      if (ans == 0) return true;
+    }
+    return false;
   }
 
   return (
     <>
       {loading && <Loader></Loader>}
+      {error && 
+        <Snackbar
+        open={error}
+        onClose={() => setError(false)}
+        autoHideDuration={4000}
+        message={`There are some unanswered question(s). Please complete before submission.`}
+        action={
+          <IconButton
+            aria-label="close"
+            color="inherit"
+            size="small"
+            onClick={() => {
+              setError(false);
+            }}
+          >
+            <CloseIcon fontSize="inherit" />
+          </IconButton>
+        }
+        sx={{ mb: 2 }}
+      ></Snackbar>}
       {!beginCalib && !loading &&
         <>
           <Box sx={{
@@ -79,7 +126,7 @@ const Calibration = () => {
           }}>
             <Typography variant="h5" gutterBottom component="div">
               Hello,
-              <p>There are a total of X questions.</p>
+              <p>There are a total of 100 questions.</p>
               <p>The test is untimed, but you should be able to complete it in approximately 40 minutes.</p>
             </Typography>
             <Button onClick={handleBegin} variant="contained" sx={{

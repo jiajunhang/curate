@@ -15,6 +15,11 @@ import TextField from '@mui/material/TextField';
 import Survey from './Survey';
 import Snackbar from '@mui/material/Snackbar';
 
+/**
+ * Main component for the Adaptive Quiz.
+ * Handles pulling of question data, recording responses and submitting back to
+ * wrapping Testlet component.
+ */
 const Quiz = ({ selectedQuiz, endQuiz }) => {
 
   const { _id: { $oid: quizId }, quizName, estimator, length: testLen, survey, collectionId } = selectedQuiz;
