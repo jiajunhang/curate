@@ -36,7 +36,7 @@ const TemplateDashboard = ({ selectedQuiz, results }) => {
 
     const abilities = results.map(r => r.summary.ability);
     
-    const bins = histogramGen(dummy_abilities); // replace dummy with abilities for live data
+    const bins = histogramGen(abilities); // replace dummy with abilities for live data
     const mapped = [];
 
     for (let i = 0; i < bins.length; i++) {
@@ -58,10 +58,10 @@ const TemplateDashboard = ({ selectedQuiz, results }) => {
   }
 
   const scatterPlotData = () => {
-    const dummy2 = dummy_abilities2.map(r => ({ability: r.ability.toFixed(3)}));
+    /* const dummy2 = dummy_abilities2.map(r => ({ability: r.ability.toFixed(3)}));
     console.log("dummy2: " + dummy2);
-    return dummy2;
-    /* const data = results.map(r => (
+    return dummy2; */
+    const data = results.map(r => (
       {
         ability: r.summary.ability,
         studentName: `${r.summary.name} ${r.summary.matric}`,
@@ -69,7 +69,7 @@ const TemplateDashboard = ({ selectedQuiz, results }) => {
 
 
     console.log("data: " + JSON.stringify(data))
-    return data; */
+    return data;
   }
 
   const getAbility = (res) => {
@@ -148,8 +148,8 @@ const TemplateDashboard = ({ selectedQuiz, results }) => {
               }}
             >
               <CartesianGrid />
-              <XAxis allowDecimals="false" label="ability" type="number" domain={[-3, 3]} dataKey="ability" />
-              <YAxis allowDecimals="false" label="ability" type="number" domain={[-3, 3]} dataKey="ability" />
+              <XAxis tickCount={30} allowDecimals="false" type="number" domain={[-3, 3]} dataKey="ability" />
+              <YAxis tickCount={30} allowDecimals="false" type="number" domain={[-3, 3]} dataKey="ability" />
               <Tooltip cursor={{ strokeDasharray: '3 3' }} />
               <Scatter name="Estimates" data={scatterPlotData()} fill="#8884d8" />
             </ScatterChart>
@@ -172,7 +172,7 @@ const TemplateDashboard = ({ selectedQuiz, results }) => {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="lower" />
+              <XAxis type="number" tickCount={30} domain={[-3,3]} dataKey="lower" />
               <YAxis />
               <Tooltip />
               <Bar dataKey="count" fill="#8884d8" />

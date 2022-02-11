@@ -24,20 +24,20 @@ const ResultDashboard = ({ result }) => {
           <Grid item xs={4}>
             <Paper sx={{ p: 2, height: 120 }}>
               <Typography component="h2" variant="h6" gutterBottom>
-                N2:
+                %Modified (N2):
               </Typography>
               <Typography component="p" variant="h4">
-                {total_n2}
+                {total_n2.toFixed(2)}
               </Typography>
             </Paper>
           </Grid>
           <Grid item xs={4}>
             <Paper sx={{ p: 2, height: 120 }}>
               <Typography component="h2" variant="h6" gutterBottom>
-                NC2:
+                %ModifiedCorrect (NC2):
               </Typography>
               <Typography component="p" variant="h4">
-                {total_nc2}
+                {total_nc2.toFixed(2)}
               </Typography>
             </Paper>
           </Grid>
@@ -47,7 +47,7 @@ const ResultDashboard = ({ result }) => {
                 Weighted NC2:
               </Typography>
               <Typography component="p" variant="h4">
-                {total_weighted_nc2.toFixed(4)}
+                {total_weighted_nc2.toFixed(3)}
               </Typography>
             </Paper>
           </Grid>
@@ -90,8 +90,6 @@ const ResultDashboard = ({ result }) => {
                 <Tooltip />
                 <Legend />
                 <Line type="monotone" dataKey="difficulty" stroke="#8884d8" />
-                <Line type="monotone" dataKey="n2_score" stroke="#82ca9d" />
-                <Line type="monotone" dataKey="nc2_score" stroke="#86ca9d" />
               </LineChart>}
             </Paper>
           </Grid>
