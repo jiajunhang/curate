@@ -20,7 +20,7 @@ const Header = () => {
               Home
             </Typography>
           </MenuItem>
-          <MenuItem component={Link} to={'/data'} key="data" >
+{/*           <MenuItem component={Link} to={'/data'} key="data" >
             <Typography textAlign="center">
               Data
             </Typography>
@@ -29,7 +29,7 @@ const Header = () => {
             <Typography textAlign="center">
               Template
             </Typography>
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem component={Link} to={'/quiz'} key="quiz" >
             <Typography textAlign="center">
               Quiz
