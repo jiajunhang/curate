@@ -126,7 +126,7 @@ const Calibration = () => {
           }}>
             <Typography variant="h5" gutterBottom component="div">
               Hello,
-              <p>There are a total of 100 questions.</p>
+              <p>There are a total of 120 questions.</p>
               <p>The test is untimed, but you should be able to complete it in approximately 40 minutes.</p>
             </Typography>
             <Button onClick={handleBegin} variant="contained" sx={{
@@ -155,7 +155,7 @@ const Calibration = () => {
                 <>
                   <Grid item md={8}>
                     <Typography variant='h5'>
-                      {`Question No. ${qnIdx + 1} of 198`}
+                      {`Question No. ${qnIdx + 1} of 120`}
                     </Typography>
                   </Grid>
                   <Grid item md={4}></Grid>

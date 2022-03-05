@@ -19,9 +19,9 @@ import CalibResult from './quiz/CalibResult';
 
 require('dotenv').config();
 
-console.log(process.env)
+/* console.log(process.env)
 console.log(process.env.REACT_APP_HOST_NAME)
-console.log(process.env.REACT_APP_PORT)
+console.log(process.env.REACT_APP_PORT) */
 
 const theme = createTheme({
   palette: {
