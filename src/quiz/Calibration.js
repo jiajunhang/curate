@@ -60,9 +60,11 @@ const Calibration = () => {
   }
 
   const handleBegin = async () => {
+    setLoading(true);
     const resp = await axios.get(get_calib_session);
     const len = resp.data.length;
     if (len >= 26) {
+      setLoading(false);
       setError(true);
       setErrorMsg("Submissions have been maxed out. Sorry!");
       return;
@@ -107,6 +109,7 @@ const Calibration = () => {
       setCalibData(calibCloned);
 
     }
+    setLoading(false);
     setBeginCalib(true);
 
   }
