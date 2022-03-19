@@ -33,7 +33,7 @@ const Result = () => {
 
   useEffect(() => {
     fetchResult().then(res => setResult(res.data))
-    console.log(result)
+    //console.log(result)
   }, [])
 
   return (
@@ -51,7 +51,14 @@ const Result = () => {
         }}>
           <Grid container spacing={2}>
             <Grid item md={12}>
-              <Typography variant="h4">Cheating Indicators</Typography>
+              <Typography variant="h5">Submission complete. </Typography>
+              <Typography variant="h5">Result ID: {id}. Pls send Result ID to Prof. Tan.</Typography>
+            </Grid>
+            <Grid item md={12}>
+              <Divider/>
+            </Grid>
+            <Grid item md={12}>
+              <Typography variant="h4">Manipulation Indicators</Typography>
             </Grid>
             <Grid item md={12}>
               <ResultDashboard result={result}></ResultDashboard>
@@ -92,14 +99,14 @@ const Result = () => {
                     <Typography variant='h5'>{qn[1].question} </Typography>
                   </Grid>
                   <Grid item md={12}>
-                    <ToggleButtonGroup disabled orientation="vertical" fullWidth={true}>
-                      {console.log(qn[1].options)}
+                    <ToggleButtonGroup key={i} disabled orientation="vertical" fullWidth={true}>
+                      {/* {console.log(qn[1].options)} */}
                       {qn[1].options && qn[1].options.map((e, idx) =>
                         <ToggleButton key={idx + 1} value={idx + 1} selected={result.detail.responses[i] === idx + 1} label={idx + 1 + ". " + e} sx={{
                           justifyContent: "flex-start"
                         }}>
-                          {console.log('idx:' + idx)}
-                          {console.log(result.detail.responses[idx])}
+                          {/* {console.log('idx:' + idx)}
+                          {console.log(result.detail.responses[idx])} */}
                           {idx + 1 + ". " + e}
                         </ToggleButton>
                       )}

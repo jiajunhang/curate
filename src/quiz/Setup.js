@@ -64,6 +64,7 @@ const Setup = ({ selectedQuiz, startQuiz }) => {
               onChange={handleMatricChange} id="matric" label="Matric Number" variant="standard" />
         </Grid>
       </Grid>
+      <br/><br/>
       <Button onClick={handleBegin} variant="contained" sx={{
         bgcolor: 'button.primary',
         '&:hover': {

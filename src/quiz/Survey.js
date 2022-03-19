@@ -58,7 +58,7 @@ const Survey = ( {endSurvey} ) => {
     const api = `http://${host}:${port}/get_survey_questions`;
 
     useEffect(() => {
-        console.log(JSON.stringify(surveyData))
+        //console.log(JSON.stringify(surveyData))
     }, [surveyData]);
 
     const fetchSurvey = async () => {
@@ -77,11 +77,7 @@ const Survey = ( {endSurvey} ) => {
     }
 
     const handleOptionSelect = (e, qnIdx) => {
-        console.log(JSON.stringify(surveyData));
         const {name , value} = e.target
-        console.log("name: " + name)
-        console.log("surveyval: " + value)
-        console.log("qIdx: " + qnIdx)
         let surveyCloned = {...surveyData};
         let ans = surveyCloned.answers;
         ans[qnIdx] = parseInt(value);
@@ -135,9 +131,9 @@ const Survey = ( {endSurvey} ) => {
                 <Grid container spacing={1}>
                     {surveyData.questions.map( (qn, qnIdx) => 
                         <>
-                        <Grid item md = {8}>
+                        <Grid key={qnIdx} item md = {8}>
                             <Typography variant='h5'>
-                                {`Question No. ${qnIdx+1} of 6`}
+                                {`Question No. ${qnIdx+1} of 8`}
                             </Typography>
                         </Grid>
                         <Grid item md = {4}></Grid>

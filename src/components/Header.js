@@ -30,11 +30,11 @@ const Header = () => {
               Template
             </Typography>
           </MenuItem> */}
-          <MenuItem component={Link} to={'/quiz'} key="quiz" >
+          {/* <MenuItem component={Link} to={'/quiz'} key="quiz" >
             <Typography textAlign="center">
               Quiz
             </Typography>
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem component={Link} to={'/calibration'} key="calibration" >
             <Typography textAlign="center">
               Calibration

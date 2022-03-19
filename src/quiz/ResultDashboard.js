@@ -8,7 +8,7 @@ const ResultDashboard = ({ result }) => {
 
   const questions = result.detail.questions;
   const difficulties = questions.map((q) => q.difficulty);
-  console.log(difficulties);
+  //console.log(difficulties);
 
   const metrics = result.metrics;
 

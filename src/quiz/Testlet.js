@@ -33,13 +33,10 @@ const Testlet = () => {
   const api = `http://${host}:${port}/quizzes`;
 
   const getQuizById = async () => {
-    console.log("get quiz by id")
     try {
       let res = await axios.get(`${api}/${id}`)
       setSelectedQuiz(res.data);
-      console.log("post fetch")
     } catch (error) {
-      console.log(error);
       setError(true);
     }
   }
@@ -79,11 +76,9 @@ const Testlet = () => {
   }
 
   useEffect(() => {
-    console.log("call effect")
     setLoading(true);
     getQuizById();
     setLoading(false);
-    console.log("post effect")
   }, [])
 
   return (

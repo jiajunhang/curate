@@ -52,7 +52,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
   const [revisions, setRevisions] = useState(revision_init);
 
   useEffect(() => {
-    console.log(JSON.stringify(qna));
+    //console.log(JSON.stringify(qna));
   }, [qna])
 
   const handleBegin = async () => {
@@ -73,7 +73,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
   const api = `http://${host}:${port}/get_questions/${collectionId}`;
 
   const fetchQuestion = async () => {
-    console.log("Fetching Question")
+    //console.log("Fetching Question")
     const body = {
       group: estimator,
       questions: qna.questions,
@@ -81,7 +81,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
     };
     try {
       const response = await axios.post(api, body);
-      console.log(JSON.stringify(response.data))
+      //console.log(JSON.stringify(response.data))
       return response.data;
     } catch (error) {
       console.error(error);
@@ -113,7 +113,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
       return;
     }
 
-    console.log("handleNext()");
+    //console.log("handleNext()");
 
     setLoading(true);
 
@@ -202,7 +202,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
   }
 
   const handleOptionClick = (e) => {
-    console.log("currentAns: " + e.target.value);
+    //console.log("currentAns: " + e.target.value);
 
     let clonedQna = { ...qna };
     let idx = clonedQna.questionIndex;
@@ -292,6 +292,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
                   onChange={handleMatricChange} id="matric" label="Matric Number" variant="standard" />
               </Grid>
             </Grid>
+            <br/>
             <Button onClick={handleBegin} variant="contained" sx={{
               bgcolor: 'button.primary',
               '&:hover': {
