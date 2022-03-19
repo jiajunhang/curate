@@ -93,10 +93,12 @@ const Calibration = () => {
 
       if (resp.data == null) {
         setError(true);
+        setLoading(false);
         setErrorMsg("Invalid session ID.")
         return;
       } else if (resp.data != null && resp.data.submitted) {
         setError(true);
+        setLoading(false);
         setErrorMsg("Submission for this session has already been made.")
         return;
 
@@ -109,8 +111,8 @@ const Calibration = () => {
       setCalibData(calibCloned);
 
     }
-    setLoading(false);
     setBeginCalib(true);
+    setLoading(false);
 
   }
 
