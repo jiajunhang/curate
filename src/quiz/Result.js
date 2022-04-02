@@ -51,10 +51,17 @@ const Result = () => {
         }}>
           <Grid container spacing={2}>
             <Grid item md={12}>
-              <Typography variant="h5">Submission complete. </Typography>
-              <Typography variant="h5">Result ID: {id}. Pls send Result ID to Prof. Tan.</Typography>
+            <Typography variant="h4">Submission Instructions</Typography>
+            <h2>Session ID: {id}</h2>
+            <h3>Completed submission, please fill in the details in this <a href="https://forms.office.com/r/5YZVSvyAFk" target="_blank">form</a>.</h3>
+              You will need to provide the following:
+              <ul>Name: YOUR NAME</ul>
+              <ul>Student Number: NUS Matric Number</ul>
+              <ul>Email: NUS email</ul>
+              <ul>Mobile: Mobile Number</ul>
+              <ul>Session ID: {id}</ul>
             </Grid>
-            <Grid item md={12}>
+            {/* <Grid item md={12}>
               <Divider/>
             </Grid>
             <Grid item md={12}>
@@ -62,7 +69,7 @@ const Result = () => {
             </Grid>
             <Grid item md={12}>
               <ResultDashboard result={result}></ResultDashboard>
-            </Grid>
+            </Grid> */}
           </Grid>
           <br />
           <Divider />

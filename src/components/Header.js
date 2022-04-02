@@ -20,7 +20,7 @@ const Header = () => {
               Home
             </Typography>
           </MenuItem>
-{/*           <MenuItem component={Link} to={'/data'} key="data" >
+          {/* <MenuItem component={Link} to={'/data'} key="data" >
             <Typography textAlign="center">
               Data
             </Typography>
@@ -30,16 +30,16 @@ const Header = () => {
               Template
             </Typography>
           </MenuItem> */}
-          {/* <MenuItem component={Link} to={'/quiz'} key="quiz" >
+          <MenuItem component={Link} to={'/quiz'} key="quiz" >
             <Typography textAlign="center">
               Quiz
             </Typography>
-          </MenuItem> */}
-          <MenuItem component={Link} to={'/calibration'} key="calibration" >
+          </MenuItem>
+          {/* <MenuItem component={Link} to={'/calibration'} key="calibration" >
             <Typography textAlign="center">
               Calibration
             </Typography>
-          </MenuItem>
+          </MenuItem> */}
           {/* <MenuItem component={Link} to={'/expquiz'} key="expquiz" >
             <Typography textAlign="center">
               ExpQuiz
