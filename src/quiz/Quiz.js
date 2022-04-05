@@ -280,7 +280,7 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
               <p>The test is untimed, but you should be able to complete it in approximately 20 minutes.</p>
             </Typography>
             {selectedQuiz.estimator !== "STD" && <Typography variant="h6" gutterBottom component="div">The final scoring is scaled according to difficulty of questions.</Typography>}
-            {selectedQuiz.estimator === "STD" && <Typography variant="h6" gutterBottom component="div">The final scoring is based on number of questions answered corrected.</Typography>}
+            {selectedQuiz.estimator === "STD" && <Typography variant="h6" gutterBottom component="div">The final scoring is based on number of questions answered correctly.</Typography>}
             <Typography variant="h6" gutterBottom component="div">
               Try to achieve the highest score possible.<p></p>
             </Typography>
