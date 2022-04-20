@@ -319,7 +319,10 @@ const Quiz = ({ selectedQuiz, endQuiz }) => {
                 <Typography variant='h4'>
                   {`Question No. ${qna.questionIndex} of ${testLen}`}
                 </Typography>
-
+              <Grid item md={12}>
+                <Typography>Item Difficulty: {qna.questions[qna.questionIndex - 1].difficulty} </Typography>
+                <Typography>Correct Ans: {qna.questions[qna.questionIndex - 1].correct} </Typography>
+              </Grid>
               </Grid>
               <Grid item md={6}></Grid>
               <Grid item md={12}>

@@ -82,7 +82,7 @@ const TemplateReview = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>Student Name</TableCell>
-                    <TableCell align="center">Student Matric</TableCell>
+                    {/* <TableCell align="center">Student Matric</TableCell> */}
                     <TableCell align="center">Attempt Date</TableCell>
                     <TableCell align="center">Ability</TableCell>
                     <TableCell align="center">Total Correct</TableCell>
@@ -104,7 +104,7 @@ const TemplateReview = () => {
                           {row.summary.name}
                         </MenuItem>
                       </TableCell>
-                      <TableCell align="center">{row.summary.matric}</TableCell>
+                      {/* <TableCell align="center">{row.summary.matric}</TableCell> */}
                       <TableCell align="center">{row.datetime}</TableCell>
                       <TableCell align="center">{parseFloat(row.summary.ability).toFixed(4)}</TableCell>
                       <TableCell align="center">{row.summary.total_correct}</TableCell>

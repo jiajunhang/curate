@@ -24,22 +24,22 @@ const Header = () => {
             <Typography textAlign="center">
               Data
             </Typography>
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem component={Link} to={'/template'} key="template" >
             <Typography textAlign="center">
               Template
             </Typography>
-          </MenuItem> */}
+          </MenuItem>
           <MenuItem component={Link} to={'/quiz'} key="quiz" >
             <Typography textAlign="center">
               Quiz
             </Typography>
           </MenuItem>
-          {/* <MenuItem component={Link} to={'/calibration'} key="calibration" >
+          <MenuItem component={Link} to={'/calibration'} key="calibration" >
             <Typography textAlign="center">
               Calibration
             </Typography>
-          </MenuItem> */}
+          </MenuItem>
           {/* <MenuItem component={Link} to={'/expquiz'} key="expquiz" >
             <Typography textAlign="center">
               ExpQuiz

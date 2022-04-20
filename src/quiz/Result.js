@@ -51,25 +51,11 @@ const Result = () => {
         }}>
           <Grid container spacing={2}>
             <Grid item md={12}>
-            <Typography variant="h4">Submission Instructions</Typography>
-            <h2>Session ID: {id}</h2>
-            <h3>Completed submission, please fill in the details in this <a href="https://forms.office.com/r/5YZVSvyAFk" target="_blank">form</a>.</h3>
-              You will need to provide the following:
-              <ul>Name: YOUR NAME</ul>
-              <ul>Student Number: NUS Matric Number</ul>
-              <ul>Email: NUS email</ul>
-              <ul>Mobile: Mobile Number</ul>
-              <ul>Session ID: {id}</ul>
-            </Grid>
-            {/* <Grid item md={12}>
-              <Divider/>
-            </Grid>
-            <Grid item md={12}>
               <Typography variant="h4">Manipulation Indicators</Typography>
             </Grid>
             <Grid item md={12}>
               <ResultDashboard result={result}></ResultDashboard>
-            </Grid> */}
+            </Grid>
           </Grid>
           <br />
           <Divider />
@@ -87,6 +73,16 @@ const Result = () => {
                   <Typography>{v}</Typography>
                 </Grid>
               </Grid>
+            )}
+            {Object.entries(result.survey).map(([k, v], i) =>
+              <Grid container item key={k}>
+              <Grid item md={4}>
+                <Typography>{k}</Typography>
+              </Grid>
+              <Grid item md={8}>
+                <Typography>{v}</Typography>
+              </Grid>
+            </Grid>
             )}
           </Grid>
           <br />
